@@ -1,9 +1,9 @@
-package com.seastar.dao.help;
+package com.seastar.common;
 
 /**
- * Created by e on 2017/1/20.
+ * Created by e on 2017/1/23.
  */
-public class SqlHelp
+public class SqlCode
 {
     public final static String getDeviceBase(String tableName)
     {

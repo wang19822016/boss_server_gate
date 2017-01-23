@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService
         else
         {
             //登录数据
-            loginDao.login(userModel, req.appId);
+            loginDao.login(req.userId, req.serverTime, req.appId);
 
             //用户每日综合数据
             commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService
         }
     }
 
-    private int gapTime = 5 * 60 * 1000;  //间隔大于5分钟则认为下线不计算
+    private int gapTime = 5;  //间隔大于5分钟则认为下线不计算
 
     public UserOnlineRsp doUserOnline(UserOnlineReq req)
     {
@@ -128,16 +128,16 @@ public class UserServiceImpl implements UserService
         {
             DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
 
-            if (req.serverTime.getTime() - model.getOnlineLastTime().getTime() > gapTime)
+            if (req.serverTime.getTime() - model.getOnlineLastTime().getTime() >= gapTime * 60 * 1000)
             {
                 model.setOnlineLastTime(req.serverTime);
-                dailyDao.updateOnlineLastTime(model,req.serverTime, req.appId);
+                dailyDao.updateOnlineLastTime(model, req.serverTime, req.appId);
             }
             else
             {
                 model.setOnlineLastTime(req.serverTime);
                 model.setOnlineTime(model.getOnlineTime() + gapTime);
-                dailyDao.updateOnlineTime(model,req.serverTime, req.appId);
+                dailyDao.updateOnlineTime(model, req.serverTime, req.appId);
             }
 
             UserOnlineRsp rsp = new UserOnlineRsp();

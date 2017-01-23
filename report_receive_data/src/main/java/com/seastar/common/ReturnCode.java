@@ -8,7 +8,8 @@ public class ReturnCode
     public final static String CODE_OK = "0";
     public final static String CODE_OK_DESC = "操作成功";
 
-
+    public final static String CODE_TABLE_INIT_OK = "100";
+    public final static String CODE_TABLE_INIT_OK_DESC = "操作成功";
 
     public final static String CODE_DEVICE_Null = "11";
     public final static String CODE_DEVICE_Null_DESC = "设备ID为空";

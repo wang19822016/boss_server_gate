@@ -1,8 +1,6 @@
 package com.seastar.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seastar.dao.help.DaoHelp;
-import com.seastar.dao.help.SqlHelp;
 import com.seastar.model.DeviceModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
