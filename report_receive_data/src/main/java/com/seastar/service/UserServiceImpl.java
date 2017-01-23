@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  * Created by e on 2017/1/15.
  */
@@ -26,6 +28,9 @@ public class UserServiceImpl implements UserService
 
     @Autowired
     private DailyDao dailyDao;
+
+    @Autowired
+    private CommonService commonService;
 
     @Transactional
     public UserRegRsp doUserReg(UserRegReq req)
@@ -85,25 +90,11 @@ public class UserServiceImpl implements UserService
         }
         else
         {
-            //用于平均在线人数
+            //登录数据
             loginDao.login(userModel, req.appId);
 
-            //单个用户每日数据情况（登录，花费，时长等）
-            DailyModel dailyModel = dailyDao.findDailyData(userModel.getUserId(), req.serverTime, req.appId);
-
-            if (dailyModel == null)
-            {
-                dailyModel = new DailyModel();
-                dailyModel.setUserId(req.userId);
-                dailyModel.setDeviceId(userModel.getDeviceId());
-                dailyModel.setDeviceType(userModel.getDeviceType());
-                dailyModel.setCountry(userModel.getCountry());
-                //dailyModel.setInstallTime(devicem);   //暂时不需要
-                dailyModel.setRegTime(userModel.getServerTime());
-                dailyModel.setLoginTime(req.serverTime);
-                dailyModel.setOnlineLastTime(req.serverTime);
-                dailyDao.saveDailyData(dailyModel, req.appId);
-            }
+            //用户每日综合数据
+            commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
 
             UserLoginRsp rsp = new UserLoginRsp();
             rsp.code = ReturnCode.CODE_OK;
@@ -112,7 +103,8 @@ public class UserServiceImpl implements UserService
         }
     }
 
-    private int gapTime = 5;  //间隔5分钟  大于5分钟则认为断线
+    private int gapTime = 5 * 60 * 1000;  //间隔大于5分钟则认为下线不计算
+
     public UserOnlineRsp doUserOnline(UserOnlineReq req)
     {
         if (req.userId < 0)
@@ -134,34 +126,24 @@ public class UserServiceImpl implements UserService
         }
         else
         {
-            DailyModel model = dailyDao.findDailyData(req.userId, req.serverTime, req.appId);
-            if (model != null)
-            {
-                if (req.serverTime.getTime() - model.getOnlineLastTime().getTime() > gapTime * 60 * 1000)  //大于5分钟 认为断线状态 不计算
-                {
-                    model.setOnlineLastTime(req.serverTime);
-                    dailyDao.updateOnlineLastTime(model,req.serverTime, req.appId);
-                }
-                else
-                {
-                    model.setOnlineLastTime(req.serverTime);
-                    model.setOnlineTime(model.getOnlineTime() + gapTime);
-                    dailyDao.updateOnlineTime(model,req.serverTime, req.appId);
-                }
+            DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
 
-                UserOnlineRsp rsp = new UserOnlineRsp();
-                rsp.code = ReturnCode.CODE_OK;
-                rsp.codeDesc = ReturnCode.CODE_OK_DESC;
-                return rsp;
+            if (req.serverTime.getTime() - model.getOnlineLastTime().getTime() > gapTime)
+            {
+                model.setOnlineLastTime(req.serverTime);
+                dailyDao.updateOnlineLastTime(model,req.serverTime, req.appId);
             }
             else
             {
-                //边界待定 dosomthing...
-                UserOnlineRsp rsp = new UserOnlineRsp();
-                rsp.code = ReturnCode.CODE_USER_ONLINE_ERROR;
-                rsp.codeDesc = ReturnCode.CODE_USER_ONLINE_ERROR_DESC;
-                return rsp;
+                model.setOnlineLastTime(req.serverTime);
+                model.setOnlineTime(model.getOnlineTime() + gapTime);
+                dailyDao.updateOnlineTime(model,req.serverTime, req.appId);
             }
+
+            UserOnlineRsp rsp = new UserOnlineRsp();
+            rsp.code = ReturnCode.CODE_OK;
+            rsp.codeDesc = ReturnCode.CODE_OK_DESC;
+            return rsp;
         }
     }
 }

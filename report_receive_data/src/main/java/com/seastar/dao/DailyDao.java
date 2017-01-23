@@ -34,7 +34,6 @@ public class DailyDao
     public void saveDailyData(DailyModel dailyModel, String appId)
     {
         String tableName = appId + "_" + "daily_data";
-        createTableIfNone(tableName);
 
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,payMoney,onlineLastTime,onlineTime,installTime,regTime,loginTime) VALUES (" +
                         "?,?,?,?,?,?,?,?,?)",
@@ -72,7 +71,6 @@ public class DailyDao
         try
         {
             String tableName = appId + "_" + "daily_data";
-            createTableIfNone(tableName);
 
             Map<String,Object> result = jdbcTemplate.queryForMap("SELECT * FROM " + tableName +" where userId = ? AND DATEDIFF(loginTime,?) = 0",
                     userId, date);
@@ -154,14 +152,6 @@ public class DailyDao
         catch (IOException e)
         {
             e.printStackTrace();
-        }
-    }
-
-    private void createTableIfNone(String tableName)
-    {
-        if (!DaoHelp.IsHaveTable(tableName, redisTemplate, jdbcTemplate))
-        {
-            DaoHelp.CreateTable(SqlHelp.getDailyData(tableName), jdbcTemplate);
         }
     }
 }

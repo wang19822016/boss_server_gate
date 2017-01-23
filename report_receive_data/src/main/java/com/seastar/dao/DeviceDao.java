@@ -26,7 +26,6 @@ public class DeviceDao
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public DeviceModel findDevice(String deviceId, String appId)
@@ -49,8 +48,6 @@ public class DeviceDao
 
         try
         {
-            createTableIfNone(tableName);
-
             Map<String, Object> resultSet = jdbcTemplate.queryForMap("select deviceId, deviceType, country, serverTime from " + tableName +" where deviceId = ?", deviceId);
 
             deviceModel = objectMapper.readValue(objectMapper.writeValueAsString(resultSet), DeviceModel.class);
@@ -81,8 +78,6 @@ public class DeviceDao
 
     public void saveDevice(DeviceModel deviceModel, String appId)
     {
-        createTableIfNone(appId);
-
         String tableName = appId + "_" + "device_base";
 
         jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, deviceType, country, serverTime) VALUES (?,?,?,?)",
@@ -90,13 +85,5 @@ public class DeviceDao
                 deviceModel.getDeviceType(),
                 deviceModel.getCountry(),
                 deviceModel.getServerTime());
-    }
-
-    private void createTableIfNone(String tableName)
-    {
-        if (!DaoHelp.IsHaveTable(tableName, redisTemplate, jdbcTemplate))
-        {
-            DaoHelp.CreateTable(SqlHelp.getDeviceBase(tableName), jdbcTemplate);
-        }
     }
 }

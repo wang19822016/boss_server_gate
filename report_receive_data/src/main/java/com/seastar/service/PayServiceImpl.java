@@ -10,6 +10,8 @@ import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * Created by e on 2017/1/19.
  */
@@ -21,6 +23,9 @@ public class PayServiceImpl implements PayService
 
     @Autowired
     private DailyDao dailyDao;
+
+    @Autowired
+    private CommonService commonService;
 
     public UserPayRsp doUserPay(UserPayReq req)
     {
@@ -42,21 +47,9 @@ public class PayServiceImpl implements PayService
             return rsp;
         }
 
-        DailyModel model = dailyDao.findDailyData(req.userId, req.serverTime,req.appId);
-
-        if (model != null)
-        {
-            model.setPayMoney(model.getPayMoney() + req.payMoney);
-            dailyDao.updatePayMoney(model, req.serverTime, req.appId);
-        }
-        else
-        {
-            //边界待定 dosomthing...
-            model = new DailyModel();
-            model.setUserId(req.userId);
-            model.setPayMoney(req.payMoney);
-            dailyDao.saveDailyData(model, req.appId);
-        }
+        DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime,req.appId);
+        model.setPayMoney(model.getPayMoney() + req.payMoney);
+        dailyDao.updatePayMoney(model, req.serverTime, req.appId);
 
         UserPayRsp rsp = new UserPayRsp();
         rsp.code = ReturnCode.CODE_OK;

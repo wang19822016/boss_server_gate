@@ -48,8 +48,6 @@ public class UserDao
 
         try
         {
-            createTableIfNone(tableName);
-
             Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,deviceType,country,serverTime FROM " + tableName +" where userId = ?", userId);
             userModel = objectMapper.readValue(objectMapper.writeValueAsString(result), UserModel.class);
         }
@@ -79,21 +77,11 @@ public class UserDao
     {
         String tableName = appId + "_" + "user_base";
 
-        createTableIfNone(tableName);
-
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,serverTime) VALUES (?,?,?,?,?)",
                 userModel.getUserId(),
                 userModel.getDeviceId(),
                 userModel.getDeviceType(),
                 userModel.getCountry(),
                 userModel.getServerTime());
-    }
-
-    private void createTableIfNone(String tableName)
-    {
-        if (!DaoHelp.IsHaveTable(tableName, redisTemplate, jdbcTemplate))
-        {
-            DaoHelp.CreateTable(SqlHelp.getUserBase(tableName), jdbcTemplate);
-        }
     }
 }

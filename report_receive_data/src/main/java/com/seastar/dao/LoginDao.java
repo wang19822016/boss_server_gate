@@ -24,17 +24,7 @@ public class LoginDao
     {
         String tableName = appId + "_" + "user_login";
 
-        createTableIfNone(tableName);
-
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId, serverTime) VALUES (?,now())",
                 userModel.getUserId());
-    }
-
-    private void createTableIfNone(String tableName)
-    {
-        if (!DaoHelp.IsHaveTable(tableName, redisTemplate, jdbcTemplate))
-        {
-            DaoHelp.CreateTable(SqlHelp.getUserLogin(tableName), jdbcTemplate);
-        }
     }
 }
