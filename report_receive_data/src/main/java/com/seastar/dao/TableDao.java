@@ -21,18 +21,18 @@ public class TableDao
 
     public boolean isHaveTable(String tableName)
     {
-        String json = redisTemplate.opsForValue().get("report_table_" + tableName);
+//        String json = redisTemplate.opsForValue().get("report_table_" + tableName);
+//
+//        if (json != null)
+//            return true;
 
-        if (json != null)
-            return true;
+        String sql = "SELECT count(table_name) FROM information_schema.TABLES WHERE table_name = ?";
 
-        String sql = "SELECT count(table_name) FROM information_schema.TABLES WHERE table_name =" + tableName;
-
-        int num = jdbcTemplate.queryForObject(sql, int.class);
+        int num = jdbcTemplate.queryForObject(sql, int.class, tableName);
 
         if (num > 0)
         {
-            redisTemplate.opsForValue().set("report_table_" + tableName, tableName, 365, TimeUnit.DAYS);
+            //redisTemplate.opsForValue().set("report_table_" + tableName, tableName, 365, TimeUnit.DAYS);
             return true;
         }
 

@@ -34,7 +34,7 @@ public class ReceiveDataTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //@Scheduled(fixedRate = 60000)       //1分钟
+    @Scheduled(fixedRate = 10000)       //10秒测试
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
@@ -83,4 +83,5 @@ public class ReceiveDataTask
             }
         }
     }
+
 }

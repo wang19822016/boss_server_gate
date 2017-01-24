@@ -35,8 +35,8 @@ public class SqlCode
 
     public final static String getUserReport(String tableName)
     {
-        String sql = "CREATE TABLE "  + tableName + "(CREATE TABLE user_report(date DATETIME,installNum INT,regNum INT,validNum INT," +
-                "dau INT,dou INT,payMoney INT,payNum INT,payRate TINYINT,newUserPayMoney INT,newUserPayNum INT,newUserPayRate TINYINT, " +
+        String sql = "CREATE TABLE "  + tableName + "(date DATETIME,installNum INT,regNum INT,validNum INT, dau INT,dou INT," +
+                "payMoney INT,payNum INT,payRate TINYINT,newUserPayMoney INT,newUserPayNum INT,newUserPayRate TINYINT, " +
                 "arpu INT,arppu INT,remain2 TINYINT,remain3 TINYINT,remain7 TINYINT,remain30 TINYINT,avgOnlineNum INT," +
                 " avgOnlineTime INT,PRIMARY KEY (date))DEFAULT CHARSET=utf8;";
         return sql;

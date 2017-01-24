@@ -34,7 +34,7 @@ public class DailyDao
         String tableName = appId + "_" + "daily_data";
 
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,payMoney,onlineLastTime,onlineTime,installTime,regTime,loginTime) VALUES (" +
-                        "?,?,?,?,?,?,?,?,?)",
+                        "?,?,?,?,?,?,?,?,?,?)",
                 dailyModel.getUserId(),
                 dailyModel.getDeviceId(),
                 dailyModel.getDeviceType(),
@@ -45,16 +45,27 @@ public class DailyDao
                 dailyModel.getInstallTime(),
                 dailyModel.getRegTime(),
                 dailyModel.getLoginTime());
+
+        try
+        {
+            DateFormat formatter = DateFormat.getDateInstance();
+            String dt = formatter.format(dailyModel.getLoginTime());
+            redisTemplate.opsForValue().set(appId + "_daily_" + dt  +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel));
+        }
+        catch (IOException io)
+        {
+            io.printStackTrace();
+        }
     }
 
     public DailyModel findDailyData(long userId, Date date, String appId)
     {
-        DateFormat formatter = DateFormat.getDateTimeInstance();
-        String day = formatter.format(date);
+        DateFormat formatter = DateFormat.getDateInstance();
+        String dt = formatter.format(date);
 
         try
         {
-            String json = redisTemplate.opsForValue().get(appId + "_daily_" + day +"_" + userId);
+            String json = redisTemplate.opsForValue().get(appId + "_daily_" + dt +"_" + userId);
 
             if (json != null)
                 return objectMapper.readValue(json, DailyModel.class);
@@ -87,7 +98,7 @@ public class DailyDao
         try
         {
             if (dailyModel != null)
-                redisTemplate.opsForValue().set(appId + "_daily_" + day +"_" + userId, objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + userId, objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
         }
         catch (IOException e)
         {
@@ -144,8 +155,8 @@ public class DailyDao
         try
         {
             DateFormat formatter = DateFormat.getDateTimeInstance();
-            String day = formatter.format(date);
-            redisTemplate.opsForValue().set(appId + "_daily_" + day +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
+            String dt = formatter.format(date);
+            redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
         }
         catch (IOException e)
         {
