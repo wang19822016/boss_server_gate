@@ -45,7 +45,7 @@ CREATE TABLE daily_data
 DROP TABLE IF EXISTS user_report;
 CREATE TABLE user_report
 (
-    date DATETIME,
+    date DATE,
     installNum INT,
     regNum INT,
     validNum INT,

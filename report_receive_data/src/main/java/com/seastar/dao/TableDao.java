@@ -28,9 +28,11 @@ public class TableDao
 
         String sql = "SELECT count(table_name) FROM information_schema.TABLES WHERE table_name = ?";
 
-        int num = jdbcTemplate.queryForObject(sql, int.class, tableName);
+        Integer num = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
 
-        if (num > 0)
+        int numValue = num == null ? 0 : num.intValue();
+
+        if (numValue > 0)
         {
             //redisTemplate.opsForValue().set("report_table_" + tableName, tableName, 365, TimeUnit.DAYS);
             return true;
