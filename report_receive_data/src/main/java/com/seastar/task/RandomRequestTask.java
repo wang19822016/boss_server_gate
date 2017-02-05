@@ -25,10 +25,10 @@ public class RandomRequestTask
 
     private String appId = "10";
 
-    @Scheduled(fixedRate = 1000)       //1秒测试
+    //@Scheduled(fixedRate = 100000)       //N秒测试
     public void ReceiveUserData()
     {
-        for (int i = 0; i < 1000; i++)      //各接口每秒1000次请求
+        for (int i = 0; i < 10000; i++)      //各接口每秒1000次请求
         {
             Random random = new Random();
             int userId = random.nextInt(10000000);
@@ -85,19 +85,27 @@ public class RandomRequestTask
 
     private void addUserLogin(int userId)
     {
-        UserLoginReq req = new UserLoginReq();
-        req.api = ServerApi.USER_LOGIN;
-        req.appId = appId;
-        req.userId = userId;
-        req.serverTime = new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000);
+        Random random = new Random();
 
-        try
+        for (int i = 0; i < 31; i++)        //30天随机登录
         {
-            redisTemplate.opsForList().leftPush("reqList", objectMapper.writeValueAsString(req));
-        }
-        catch (IOException io)
-        {
-            io.printStackTrace();
+            if (!random.nextBoolean())
+                continue;
+
+            UserLoginReq req = new UserLoginReq();
+            req.api = ServerApi.USER_LOGIN;
+            req.appId = appId;
+            req.userId = userId;
+            req.serverTime = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000 * i);
+
+            try
+            {
+                redisTemplate.opsForList().leftPush("reqList", objectMapper.writeValueAsString(req));
+            }
+            catch (IOException io)
+            {
+                io.printStackTrace();
+            }
         }
     }
 

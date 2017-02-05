@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,17 +40,23 @@ public class ReceiveDataTask
     {
         long len = redisTemplate.opsForList().size("reqList");
 
-        for (long i = 0; i < len; i++)
-        {
-            String json = redisTemplate.opsForList().rightPop("reqList");
+        //System.out.println("action: " + len);
 
+//        List<String> list = redisTemplate.opsForList().range("reqList", 0, len);
+
+
+        for (int i = 0; i < len; i++)
+        {
+
+            String json = redisTemplate.opsForList().rightPop("reqList");
+            System.out.println("json: " + json);
             try
             {
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
 
                 String api = (String) map.get("api");
-
-                //System.out.println("api: " + api); //test
+                //String api = "test";
+                System.out.println("api: " + api);
 
                 if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                 {
@@ -83,5 +90,4 @@ public class ReceiveDataTask
             }
         }
     }
-
 }

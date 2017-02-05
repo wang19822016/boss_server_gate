@@ -28,14 +28,14 @@ public class SqlCode
     public final static String getDailyData(String tableName)
     {
         String sql = "CREATE TABLE "  + tableName + "(userId BIGINT(20) DEFAULT 0,deviceId VARCHAR(40),deviceType VARCHAR(10)," +
-                "country VARCHAR(10),payMoney INT DEFAULT 0,onlineLastTime DATETIME,onlineTime INT DEFAULT 0,installTime DATETIME,regTime DATETIME," +
-                "loginTime DATETIME) DEFAULT CHARSET=utf8;";
+                "country VARCHAR(10),payMoney INT DEFAULT 0,onlineLastTime DATETIME,onlineTime INT DEFAULT 0,installTime DATE,regTime DATE," +
+                "loginTime DATE) DEFAULT CHARSET=utf8;";
         return sql;
     }
 
     public final static String getUserReport(String tableName)
     {
-        String sql = "CREATE TABLE "  + tableName + "(date DATETIME,installNum INT,regNum INT,validNum INT, dau INT,dou INT," +
+        String sql = "CREATE TABLE "  + tableName + "(date DATE,installNum INT,regNum INT,validNum INT, dau INT,dou INT," +
                 "payMoney INT,payNum INT,payRate TINYINT,newUserPayMoney INT,newUserPayNum INT,newUserPayRate TINYINT, " +
                 "arpu INT,arppu INT,remain2 TINYINT,remain3 TINYINT,remain7 TINYINT,remain30 TINYINT,avgOnlineNum INT," +
                 " avgOnlineTime INT,PRIMARY KEY (date))DEFAULT CHARSET=utf8;";

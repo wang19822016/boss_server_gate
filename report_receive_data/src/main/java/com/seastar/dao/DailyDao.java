@@ -98,7 +98,7 @@ public class DailyDao
         try
         {
             if (dailyModel != null)
-                redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + userId, objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + userId, objectMapper.writeValueAsString(dailyModel));
         }
         catch (IOException e)
         {
@@ -154,9 +154,9 @@ public class DailyDao
     {
         try
         {
-            DateFormat formatter = DateFormat.getDateTimeInstance();
+            DateFormat formatter = DateFormat.getDateInstance();
             String dt = formatter.format(date);
-            redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel), 30, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel));
         }
         catch (IOException e)
         {

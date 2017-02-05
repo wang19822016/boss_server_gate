@@ -5,7 +5,8 @@ CREATE TABLE device_base
   deviceType VARCHAR(10),
   country VARCHAR(10),
   serverTime DATETIME,
-  PRIMARY KEY(deviceID)
+  PRIMARY KEY(deviceID),
+  INDEX(serverTime)
 )DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_base;
@@ -16,7 +17,8 @@ CREATE TABLE user_base
   deviceType VARCHAR(10),
   country VARCHAR(10),
   serverTime DATETIME,
-  PRIMARY KEY (userId)
+  PRIMARY KEY (userId),
+  INDEX(serverTime)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_login;
@@ -24,7 +26,7 @@ CREATE TABLE user_login
 (
   userId BIGINT(20) DEFAULT 0,
   serverTime DATETIME,
-  INDEX (userId)
+  INDEX(serverTime)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS daily_data;
@@ -37,9 +39,10 @@ CREATE TABLE daily_data
   payMoney INT DEFAULT 0,
   onlineLastTime DATETIME,
   onlineTime INT DEFAULT 0,
-  installTime DATETIME,
-  regTime DATETIME,
-  loginTime DATETIME
+  installTime DATE,
+  regTime DATE,
+  loginTime DATE,
+  INDEX(loginTime)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_report;

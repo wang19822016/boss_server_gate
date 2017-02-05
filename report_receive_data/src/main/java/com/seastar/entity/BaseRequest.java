@@ -7,4 +7,5 @@ public class BaseRequest
 {
     public String api;
     public String appId;
+    public String clientTime;
 }
