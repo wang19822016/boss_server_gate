@@ -23,15 +23,16 @@ public class RandomRequestTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private String appId = "10";
+    private String appId = "11";
 
-    //@Scheduled(fixedRate = 100000)       //N秒测试
+    //@Scheduled(fixedRate = 1000000000)       //N秒测试
     public void ReceiveUserData()
     {
         for (int i = 0; i < 10000; i++)      //各接口每秒1000次请求
         {
             Random random = new Random();
-            int userId = random.nextInt(10000000);
+            //int userId = random.nextInt(10000000);
+            int userId = i;
             System.out.println("random: " + userId);
 
             addDeviceInstall(userId);
@@ -40,6 +41,8 @@ public class RandomRequestTask
             addUserPay(userId);
             addUserOnline(userId);
         }
+
+        System.out.println("data complete");
     }
 
     private void addDeviceInstall(int userId)

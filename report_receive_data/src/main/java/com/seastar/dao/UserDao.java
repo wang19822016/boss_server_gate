@@ -1,8 +1,6 @@
 package com.seastar.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seastar.dao.help.DaoHelp;
-import com.seastar.dao.help.SqlHelp;
 import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -77,11 +75,12 @@ public class UserDao
     {
         String tableName = appId + "_" + "user_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,serverTime) VALUES (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,serverDate,serverTime) VALUES (?,?,?,?,?,?)",
                 userModel.getUserId(),
                 userModel.getDeviceId(),
                 userModel.getDeviceType(),
                 userModel.getCountry(),
+                userModel.getServerDate(),
                 userModel.getServerTime());
     }
 }

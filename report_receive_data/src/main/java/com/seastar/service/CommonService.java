@@ -34,7 +34,7 @@ public class CommonService
             dailyModel.setDeviceId(userModel.getDeviceId());
             dailyModel.setDeviceType(userModel.getDeviceType());
             dailyModel.setCountry(userModel.getCountry());
-            dailyModel.setRegTime(userModel.getServerTime());
+            dailyModel.setRegTime(userModel.getServerDate());
             dailyModel.setLoginTime(date);
             dailyModel.setOnlineLastTime(date);
             dailyDao.saveDailyData(dailyModel, appId);

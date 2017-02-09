@@ -23,8 +23,9 @@ public class LoginDao
     {
         String tableName = appId + "_" + "user_login";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId, serverTime) VALUES (?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId, serverDate, serverTime) VALUES (?,?,?)",
                 userId,
+                date,
                 date);
     }
 }

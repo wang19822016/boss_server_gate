@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService
             userModel.setDeviceId(req.deviceId);
             userModel.setDeviceType(req.deviceType);
             userModel.setCountry(req.country);
+            userModel.setServerDate(req.serverTime);
             userModel.setServerTime(req.serverTime);
             userDao.saveUser(userModel, req.appId);
 
@@ -129,7 +130,7 @@ public class UserServiceImpl implements UserService
             DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
 
             long time = req.serverTime.getTime() - model.getOnlineLastTime().getTime();
-            System.out.println("time: " + time);
+            //System.out.println("time: " + time);
             if (time >= gapTime * 60 * 1000)
             {
                 model.setOnlineLastTime(req.serverTime);

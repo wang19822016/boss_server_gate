@@ -78,10 +78,11 @@ public class DeviceDao
     {
         String tableName = appId + "_" + "device_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, deviceType, country, serverTime) VALUES (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, deviceType, country, serverDate, serverTime) VALUES (?,?,?,?,?)",
                 deviceModel.getDeviceId(),
                 deviceModel.getDeviceType(),
                 deviceModel.getCountry(),
+                deviceModel.getServerDate(),
                 deviceModel.getServerTime());
     }
 }

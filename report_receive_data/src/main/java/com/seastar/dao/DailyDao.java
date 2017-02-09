@@ -60,8 +60,7 @@ public class DailyDao
 
     public DailyModel findDailyData(long userId, Date date, String appId)
     {
-        DateFormat formatter = DateFormat.getDateInstance();
-        String dt = formatter.format(date);
+        String dt = DateFormat.getDateInstance().format(date);
 
         try
         {
@@ -81,8 +80,8 @@ public class DailyDao
         {
             String tableName = appId + "_" + "daily_data";
 
-            Map<String,Object> result = jdbcTemplate.queryForMap("SELECT * FROM " + tableName +" where userId = ? AND DATEDIFF(loginTime,?) = 0",
-                    userId, date);
+            Map<String,Object> result = jdbcTemplate.queryForMap("SELECT * FROM " + tableName +" where userId = ? AND loginTime = ?",
+                    userId, dt);
 
             dailyModel = objectMapper.readValue(objectMapper.writeValueAsString(result), DailyModel.class);
         }
@@ -113,10 +112,12 @@ public class DailyDao
     {
         String tableName = appId + "_" + "daily_data";
 
-        int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ? WHERE userId = ? AND DATEDIFF(loginTime,?) = 0",
+        String dt = DateFormat.getDateInstance().format(date);
+
+        int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getOnlineLastTime(),
                 dailyModel.getUserId(),
-                date);
+                dt);
 
         if (line > 0)
             updateRedisData(dailyModel, date, appId);
@@ -126,12 +127,12 @@ public class DailyDao
     public void updateOnlineTime(DailyModel dailyModel, Date date, String appId)
     {
         String tableName = appId + "_" + "daily_data";
-
-        int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ?, onlineTime = ? WHERE userId = ? AND DATEDIFF(loginTime,?) = 0",
+        String dt = DateFormat.getDateInstance().format(date);
+        int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ?, onlineTime = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getOnlineLastTime(),
                 dailyModel.getOnlineTime(),
                 dailyModel.getUserId(),
-                date);
+                dt);
 
         if (line > 0)
             updateRedisData(dailyModel, date, appId);
@@ -141,10 +142,12 @@ public class DailyDao
     {
         String tableName = appId + "_" + "daily_data";
 
-        int line = jdbcTemplate.update("UPDATE " + tableName +" SET payMoney = ? WHERE userId = ? AND DATEDIFF(loginTime,?) = 0",
+        String dt = DateFormat.getDateInstance().format(date);
+
+        int line = jdbcTemplate.update("UPDATE " + tableName +" SET payMoney = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getPayMoney(),
                 dailyModel.getUserId(),
-                date);
+                dt);
 
         if (line > 0)
             updateRedisData(dailyModel, date, appId);

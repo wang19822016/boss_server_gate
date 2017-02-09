@@ -5,8 +5,9 @@ CREATE TABLE device_base
   deviceType VARCHAR(10),
   country VARCHAR(10),
   serverTime DATETIME,
+  serverDate DATE,
   PRIMARY KEY(deviceID),
-  INDEX(serverTime)
+  INDEX(serverDate)
 )DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_base;
@@ -17,21 +18,26 @@ CREATE TABLE user_base
   deviceType VARCHAR(10),
   country VARCHAR(10),
   serverTime DATETIME,
+  serverDate DATE,
   PRIMARY KEY (userId),
-  INDEX(serverTime)
+  INDEX(serverDate)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_login;
 CREATE TABLE user_login
 (
+  id BIGINT(20) NOT NULL auto_increment,
   userId BIGINT(20) DEFAULT 0,
   serverTime DATETIME,
-  INDEX(serverTime)
+  serverDate DATE,          /*use mysql index and cache*/
+  PRIMARY KEY (id),
+  INDEX (serverDate)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS daily_data;
 CREATE TABLE daily_data
 (
+  id BIGINT(20) NOT NULL auto_increment,
   userId BIGINT(20) DEFAULT 0,
   deviceId VARCHAR(40),
   deviceType VARCHAR(10),
@@ -42,12 +48,15 @@ CREATE TABLE daily_data
   installTime DATE,
   regTime DATE,
   loginTime DATE,
-  INDEX(loginTime)
+  PRIMARY KEY (id),
+  INDEX uid_login_time(userId, loginTime),
+  INDEX login_reg_time(loginTime,regTime)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_report;
 CREATE TABLE user_report
 (
+    id BIGINT(20) NOT NULL auto_increment,
     date DATE,
     installNum INT,
     regNum INT,
@@ -68,5 +77,6 @@ CREATE TABLE user_report
     remain30 TINYINT,
     avgOnlineNum INT,
     avgOnlineTime INT,
-    PRIMARY KEY (date)
+    PRIMARY KEY (id),
+    INDEX (date)
 )DEFAULT CHARSET=utf8;

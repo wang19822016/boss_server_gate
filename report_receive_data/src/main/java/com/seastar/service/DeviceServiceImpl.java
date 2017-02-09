@@ -41,6 +41,7 @@ public class DeviceServiceImpl implements DeviceService
             deviceModel.setDeviceId(req.deviceId);
             deviceModel.setDeviceType(req.deviceType);
             deviceModel.setCountry(req.country);
+            deviceModel.setServerDate(req.serverTime);
             deviceModel.setServerTime(req.serverTime);
             deviceDao.saveDevice(deviceModel, req.appId);
             //logger.info("deviceInstall {}", req.deviceId);

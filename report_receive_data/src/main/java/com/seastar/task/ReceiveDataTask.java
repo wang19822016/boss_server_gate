@@ -35,28 +35,23 @@ public class ReceiveDataTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Scheduled(fixedRate = 10000)       //10秒测试
+    @Scheduled(fixedRate = 1000000000)       //10秒测试
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
-
-        //System.out.println("action: " + len);
-
-//        List<String> list = redisTemplate.opsForList().range("reqList", 0, len);
-
+        //List<String> list = redisTemplate.opsForList().range("reqList", 0, len);
 
         for (int i = 0; i < len; i++)
         {
-
+            //String json = list.get((int)len-i);
             String json = redisTemplate.opsForList().rightPop("reqList");
             System.out.println("json: " + json);
+
             try
             {
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
-
                 String api = (String) map.get("api");
-                //String api = "test";
-                System.out.println("api: " + api);
+                //System.out.println("api: " + api);
 
                 if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                 {

@@ -11,7 +11,8 @@ public class UserModel
     private String deviceId;
     private String deviceType;   //ios, android
     private String country;
-    private Date serverTime;
+    private Date serverDate;        //日期 2017-01-01 sql优化
+    private Date serverTime;        //具体时间 2017-01-01 00:00:00
 
     public long getUserId()
     {
@@ -47,12 +48,23 @@ public class UserModel
         this.country = country;
     }
 
-    public Date getServerTime() {
+    public Date getServerDate() {
+        return serverDate;
+    }
+
+    public void setServerDate(Date serverDate) {
+        this.serverDate = serverDate;
+    }
+
+    public Date getServerTime()
+    {
         return serverTime;
     }
 
     public void setServerTime(Date serverTime) {
         this.serverTime = serverTime;
     }
+
+
 
 }
