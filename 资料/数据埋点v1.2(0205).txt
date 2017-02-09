@@ -1,0 +1,59 @@
+激活
+
+{
+   appId:1,
+   api:device/install,
+   deviceId:1,
+   deviceType:ios,
+   country:china,  
+   serverTime:12341234,
+   clientTime:1234
+}
+
+
+注册
+
+{
+   appId:1,
+   api:user/register,
+   userId:1,
+   deviceId:1,
+   deviceType:ios,
+   country:china,
+   serverTime:12341234,
+   clientTime:1234
+}
+
+
+登录
+
+{
+   appId:1,
+   api:user/login,
+   userId:1,
+   serverTime:12341234,
+   clientTime:1234
+}
+
+
+付费
+
+{
+   appId:1,
+   api:user/pay,
+   userId:1,
+   payMoney:100
+   serverTime:12341234,
+   clientTime:1234
+}
+
+
+在线
+
+{
+   appId:1,
+   api:user/online,
+   userId:1,
+   serverTime:12341234,
+   clientTime:1234
+}
