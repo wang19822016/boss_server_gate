@@ -26,23 +26,25 @@ public class RandomRequestTask
     private String appId = "11";
 
     //@Scheduled(fixedRate = 1000000000)       //N秒测试
+    //@Scheduled(cron = "0 0 1 * * ?")
     public void ReceiveUserData()
     {
-        for (int i = 0; i < 10000; i++)      //各接口每秒1000次请求
+        System.out.println("RandomRequestTask: " + 0 + " time: " + System.currentTimeMillis());
+        for (int i = 10000; i < 110000; i++)      //各接口每秒1000次请求
         {
             Random random = new Random();
             //int userId = random.nextInt(10000000);
             int userId = i;
-            System.out.println("random: " + userId);
+            //System.out.println("random: " + userId);
 
             addDeviceInstall(userId);
-            addUserReg(userId);
-            addUserLogin(userId);
-            addUserPay(userId);
-            addUserOnline(userId);
+//            addUserReg(userId);
+//            addUserLogin(userId);
+//            addUserPay(userId);
+//            addUserOnline(userId);
         }
 
-        System.out.println("data complete");
+        System.out.println("RandomRequestTaskDataComplete: " + 100000 + " time: " + System.currentTimeMillis());
     }
 
     private void addDeviceInstall(int userId)
@@ -72,8 +74,6 @@ public class RandomRequestTask
         req.appId = appId;
         req.userId = userId;
         req.deviceId = "mac" + userId;
-        req.deviceType = "ios";
-        req.country = "china";
         req.serverTime = new Date(System.currentTimeMillis() + 1 * 60 * 60 * 1000);
 
         try

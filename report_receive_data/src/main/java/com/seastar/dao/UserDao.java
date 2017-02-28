@@ -26,7 +26,7 @@ public class UserDao
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserModel findUser(long userId, String appId)
+    public UserModel findUser(String appId, long userId)
     {
         try
         {
@@ -46,7 +46,7 @@ public class UserDao
 
         try
         {
-            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,deviceType,country,serverTime FROM " + tableName +" where userId = ?", userId);
+            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,serverTime FROM " + tableName +" where userId = ?", userId);
             userModel = objectMapper.readValue(objectMapper.writeValueAsString(result), UserModel.class);
         }
         catch (EmptyResultDataAccessException e)
@@ -75,11 +75,9 @@ public class UserDao
     {
         String tableName = appId + "_" + "user_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,serverDate,serverTime) VALUES (?,?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,serverDate,serverTime) VALUES (?,?,?,?)",
                 userModel.getUserId(),
                 userModel.getDeviceId(),
-                userModel.getDeviceType(),
-                userModel.getCountry(),
                 userModel.getServerDate(),
                 userModel.getServerTime());
     }

@@ -16,7 +16,7 @@ public class TableServiceImpl implements TableService
     @Autowired
     private TableDao tableDao;
 
-    private String[] tables = new String[]{"device_base","user_base","user_login","daily_data","user_report"};
+    private String[] tables = new String[]{"device_base","user_base","user_login","daily_data","user_report","channel_report"};
 
     public TableRsp doInitReportTables(String appId)
     {
@@ -55,6 +55,9 @@ public class TableServiceImpl implements TableService
 
         if (templateName == "user_report")
             return SqlCode.getUserReport(tbName);
+
+        if (templateName == "channel_report")
+            return SqlCode.getChannelReport(tbName);
 
         return "";
     }

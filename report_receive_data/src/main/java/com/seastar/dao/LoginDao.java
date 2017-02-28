@@ -19,7 +19,7 @@ public class LoginDao
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    public void login(long userId, Date date, String appId)
+    public void login(String appId, long userId, Date date)
     {
         String tableName = appId + "_" + "user_login";
 

@@ -3,9 +3,12 @@
 {
    appId:1,
    api:device/install,
-   deviceId:1,
-   deviceType:ios,
-   country:china,  
+   deviceId:abcdef,
+   channelType£ºfacebook,
+   platform:ios,
+   deviceType:samsung,
+   deviceName:i9001,
+   country:1,  
    serverTime:12341234,
    clientTime:1234
 }
@@ -17,9 +20,7 @@
    appId:1,
    api:user/register,
    userId:1,
-   deviceId:1,
-   deviceType:ios,
-   country:china,
+   deviceId:abcdef,
    serverTime:12341234,
    clientTime:1234
 }

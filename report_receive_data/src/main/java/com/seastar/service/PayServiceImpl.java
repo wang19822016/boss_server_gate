@@ -37,7 +37,7 @@ public class PayServiceImpl implements PayService
             return rsp;
         }
 
-        UserModel userModel = userDao.findUser(req.userId, req.appId);
+        UserModel userModel = userDao.findUser(req.appId, req.userId);
 
         if (userModel == null)
         {
@@ -47,7 +47,7 @@ public class PayServiceImpl implements PayService
             return rsp;
         }
 
-        DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime,req.appId);
+        DailyModel model = commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
         model.setPayMoney(model.getPayMoney() + req.payMoney);
         dailyDao.updatePayMoney(model, req.serverTime, req.appId);
 

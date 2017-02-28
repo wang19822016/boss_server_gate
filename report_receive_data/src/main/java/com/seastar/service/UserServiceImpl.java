@@ -35,71 +35,46 @@ public class UserServiceImpl implements UserService
     @Transactional
     public UserRegRsp doUserReg(UserRegReq req)
     {
-        if (req.userId < 0)
-        {
-            UserRegRsp rsp = new UserRegRsp();
-            rsp.code = ReturnCode.CODE_USERID_ERROR;
-            rsp.codeDesc = ReturnCode.CODE_USERID_ERROR_DESC;
-            return rsp;
-        }
-
-        UserModel userModel = userDao.findUser(req.userId, req.appId);
+        UserModel userModel = userDao.findUser(req.appId, req.userId);
 
         if (userModel == null)
         {
             userModel = new UserModel();
             userModel.setUserId(req.userId);
             userModel.setDeviceId(req.deviceId);
-            userModel.setDeviceType(req.deviceType);
-            userModel.setCountry(req.country);
             userModel.setServerDate(req.serverTime);
             userModel.setServerTime(req.serverTime);
             userDao.saveUser(userModel, req.appId);
+        }
 
-            UserRegRsp rsp = new UserRegRsp();
-            rsp.code = ReturnCode.CODE_OK;
-            rsp.codeDesc = ReturnCode.CODE_OK_DESC;
-            return rsp;
-        }
-        else
-        {
-            UserRegRsp rsp = new UserRegRsp();
-            rsp.code = ReturnCode.CODE_USER_FIND;
-            rsp.codeDesc = ReturnCode.CODE_USER_FIND_DESC;
-            return rsp;
-        }
+        UserRegRsp rsp = new UserRegRsp();
+        rsp.code = ReturnCode.CODE_OK;
+        rsp.codeDesc = ReturnCode.CODE_OK_DESC;
+        return rsp;
     }
 
     public UserLoginRsp doUserLogin(UserLoginReq req)
     {
-        if (req.userId < 0)
-        {
-            UserLoginRsp rsp = new UserLoginRsp();
-            rsp.code = ReturnCode.CODE_USERID_ERROR;
-            rsp.codeDesc = ReturnCode.CODE_USERID_ERROR_DESC;
-            return rsp;
-        }
+        UserModel userModel = userDao.findUser(req.appId, req.userId);
 
-        UserModel userModel = userDao.findUser(req.userId, req.appId);
-
-        if (userModel == null)
-        {
-            UserLoginRsp rsp = new UserLoginRsp();
-            rsp.code = ReturnCode.CODE_USER_Null;
-            rsp.codeDesc = ReturnCode.CODE_USER_Null_DESC;
-            return rsp;
-        }
-        else
+        if (userModel != null)
         {
             //登录数据
-            loginDao.login(req.userId, req.serverTime, req.appId);
+            loginDao.login(req.appId, req.userId, req.serverTime);
 
-            //用户每日综合数据
-            commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
+            //活跃用户快照（综合数据）
+            commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
 
             UserLoginRsp rsp = new UserLoginRsp();
             rsp.code = ReturnCode.CODE_OK;
             rsp.codeDesc = ReturnCode.CODE_OK_DESC;
+            return rsp;
+        }
+        else
+        {
+            UserLoginRsp rsp = new UserLoginRsp();
+            rsp.code = ReturnCode.CODE_USER_Null;
+            rsp.codeDesc = ReturnCode.CODE_USER_Null_DESC;
             return rsp;
         }
     }
@@ -108,26 +83,11 @@ public class UserServiceImpl implements UserService
 
     public UserOnlineRsp doUserOnline(UserOnlineReq req)
     {
-        if (req.userId < 0)
-        {
-            UserOnlineRsp rsp = new UserOnlineRsp();
-            rsp.code = ReturnCode.CODE_USERID_ERROR;
-            rsp.codeDesc = ReturnCode.CODE_USERID_ERROR_DESC;
-            return rsp;
-        }
+        UserModel userModel = userDao.findUser(req.appId, req.userId);
 
-        UserModel userModel = userDao.findUser(req.userId, req.appId);
-
-        if (userModel == null)
+        if (userModel != null)
         {
-            UserOnlineRsp rsp = new UserOnlineRsp();
-            rsp.code = ReturnCode.CODE_USER_Null;
-            rsp.codeDesc = ReturnCode.CODE_USER_Null_DESC;
-            return rsp;
-        }
-        else
-        {
-            DailyModel model = commonService.createDailyDataIfNone(req.userId, req.serverTime, req.appId);
+            DailyModel model = commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
 
             long time = req.serverTime.getTime() - model.getOnlineLastTime().getTime();
             //System.out.println("time: " + time);
@@ -146,6 +106,13 @@ public class UserServiceImpl implements UserService
             UserOnlineRsp rsp = new UserOnlineRsp();
             rsp.code = ReturnCode.CODE_OK;
             rsp.codeDesc = ReturnCode.CODE_OK_DESC;
+            return rsp;
+        }
+        else
+        {
+            UserOnlineRsp rsp = new UserOnlineRsp();
+            rsp.code = ReturnCode.CODE_USER_Null;
+            rsp.codeDesc = ReturnCode.CODE_USER_Null_DESC;
             return rsp;
         }
     }

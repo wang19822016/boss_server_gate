@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,23 +36,22 @@ public class ReceiveDataTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Scheduled(fixedRate = 1000000000)       //10秒测试
+    //@Scheduled(fixedRate = 1000000000)       //10秒测试
+    //@Scheduled(cron = "0 0 3 * * ?")
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
-        //List<String> list = redisTemplate.opsForList().range("reqList", 0, len);
+
+        //System.out.println("start time: " + System.currentTimeMillis());
 
         for (int i = 0; i < len; i++)
         {
-            //String json = list.get((int)len-i);
             String json = redisTemplate.opsForList().rightPop("reqList");
-            System.out.println("json: " + json);
-
+            //System.out.println("json: " + json);
             try
             {
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
                 String api = (String) map.get("api");
-                //System.out.println("api: " + api);
 
                 if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                 {
@@ -84,5 +84,9 @@ public class ReceiveDataTask
                 e.printStackTrace();
             }
         }
+
+//        long stopTime = System.currentTimeMillis();
+//        int totalTime = (int)((stopTime - startTime)/1000);
+//        System.out.println("stop: " + totalTime + " qts: " + 5000/totalTime);
     }
 }

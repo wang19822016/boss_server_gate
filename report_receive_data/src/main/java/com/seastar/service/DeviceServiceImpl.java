@@ -25,37 +25,27 @@ public class DeviceServiceImpl implements DeviceService
     @Transactional
     public DeviceInstallRsp doDeviceInstall(DeviceInstallReq req)
     {
-        if (req.deviceId.isEmpty())
-        {
-            DeviceInstallRsp rsp = new DeviceInstallRsp();
-            rsp.code = ReturnCode.CODE_DEVICE_Null;
-            rsp.codeDesc = ReturnCode.CODE_DEVICE_Null_DESC;
-            return rsp;
-        }
 
-        DeviceModel deviceModel = deviceDao.findDevice(req.deviceId, req.appId);
+        DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
 
         if (deviceModel == null)
         {
             deviceModel = new DeviceModel();
             deviceModel.setDeviceId(req.deviceId);
+            deviceModel.setChannelType(req.channelType);
+            deviceModel.setPlatform(req.platform);
             deviceModel.setDeviceType(req.deviceType);
+            deviceModel.setDeviceName(req.deviceName);
             deviceModel.setCountry(req.country);
             deviceModel.setServerDate(req.serverTime);
             deviceModel.setServerTime(req.serverTime);
             deviceDao.saveDevice(deviceModel, req.appId);
             //logger.info("deviceInstall {}", req.deviceId);
-            DeviceInstallRsp rsp = new DeviceInstallRsp();
-            rsp.code = ReturnCode.CODE_OK;
-            rsp.codeDesc = ReturnCode.CODE_OK_DESC;
-            return rsp;
         }
-        else
-        {
-            DeviceInstallRsp rsp = new DeviceInstallRsp();
-            rsp.code = ReturnCode.CODE_DEVICE_FIND;
-            rsp.codeDesc = ReturnCode.CODE_DEVICE_FIND_DESC;
-            return rsp;
-        }
+
+        DeviceInstallRsp rsp = new DeviceInstallRsp();
+        rsp.code = ReturnCode.CODE_OK;
+        rsp.codeDesc = ReturnCode.CODE_OK_DESC;
+        return rsp;
     }
 }

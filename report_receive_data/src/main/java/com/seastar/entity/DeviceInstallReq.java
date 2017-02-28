@@ -8,7 +8,10 @@ import java.util.Date;
 public class DeviceInstallReq extends BaseRequest
 {
     public String deviceId;
-    public String deviceType;   //ios, android
+    public String channelType;      //渠道 facebook
+    public String platform;         //平台  ios/android
+    public String deviceType;       //samsung
+    public String deviceName;       // i9001
     public String country;
     public Date   serverTime;
 }

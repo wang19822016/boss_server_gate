@@ -1,8 +1,10 @@
 package com.seastar.service;
 
 import com.seastar.dao.DailyDao;
+import com.seastar.dao.DeviceDao;
 import com.seastar.dao.UserDao;
 import com.seastar.model.DailyModel;
+import com.seastar.model.DeviceModel;
 import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,13 +18,16 @@ import java.util.Date;
 public class CommonService
 {
     @Autowired
+    private DeviceDao deviceDao;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
     private DailyDao dailyDao;
 
-    //用户每日综合数据（登录，花费，时长等）
-    public DailyModel createDailyDataIfNone(long userId, Date date, String appId)
+    //活跃用户每日数据快照（uid，deviceId, country, payMoney，onlineTime..等）
+    public DailyModel createDailyDataIfNone(String appId, long userId, Date date)
     {
         DailyModel dailyModel = dailyDao.findDailyData(userId, date, appId);
 
@@ -30,10 +35,20 @@ public class CommonService
         {
             dailyModel = new DailyModel();
             dailyModel.setUserId(userId);
-            UserModel userModel = userDao.findUser(userId, appId);
+
+            UserModel userModel = userDao.findUser(appId, userId);
             dailyModel.setDeviceId(userModel.getDeviceId());
-            dailyModel.setDeviceType(userModel.getDeviceType());
-            dailyModel.setCountry(userModel.getCountry());
+
+            DeviceModel deviceModel = deviceDao.findDevice(appId,userModel.getDeviceId());
+            if (deviceModel != null)
+            {
+                dailyModel.setChannelType(deviceModel.getChannelType());
+                dailyModel.setPlatform(deviceModel.getPlatform());
+                deviceModel.setDeviceType(deviceModel.getDeviceType());
+                deviceModel.setDeviceName(deviceModel.getDeviceName());
+                dailyModel.setCountry(deviceModel.getCountry());
+            }
+
             dailyModel.setRegTime(userModel.getServerDate());
             dailyModel.setLoginTime(date);
             dailyModel.setOnlineLastTime(date);

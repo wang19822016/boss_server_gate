@@ -14,7 +14,16 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lj on 2017/1/15.
+ *
+     deviceId VARCHAR(40),
+     channelType VARCHAR(10), -- 渠道 facebook
+     platform VARCHAR(10),    -- 平台  ios/android
+     deviceType VARCHAR(10),  -- samsung
+     deviceName VARCHAR(10),  -- i9001
+     country VARCHAR(10),
+     serverTime DATETIME,
  */
+
 @Component
 public class DeviceDao
 {
@@ -26,11 +35,11 @@ public class DeviceDao
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public DeviceModel findDevice(String deviceId, String appId)
+    public DeviceModel findDevice(String appId, String deviceId)
     {
         try
         {
-            String json = redisTemplate.opsForValue().get("device_"+ deviceId);
+            String json = redisTemplate.opsForValue().get(appId + "_device_" + deviceId);
 
             if (json != null)
                 return objectMapper.readValue(json, DeviceModel.class);
@@ -46,7 +55,7 @@ public class DeviceDao
 
         try
         {
-            Map<String, Object> resultSet = jdbcTemplate.queryForMap("select deviceId, deviceType, country, serverTime from " + tableName +" where deviceId = ?", deviceId);
+            Map<String, Object> resultSet = jdbcTemplate.queryForMap("select * from " + tableName +" where deviceId = ?", deviceId);
 
             deviceModel = objectMapper.readValue(objectMapper.writeValueAsString(resultSet), DeviceModel.class);
         }
@@ -63,7 +72,7 @@ public class DeviceDao
         {
             if (deviceModel != null)
             {
-                redisTemplate.opsForValue().set("device_"+ deviceId, objectMapper.writeValueAsString(deviceModel), 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(appId +"_device_"+ deviceId, objectMapper.writeValueAsString(deviceModel), 30, TimeUnit.DAYS);
             }
         }
         catch (IOException e)
@@ -78,9 +87,12 @@ public class DeviceDao
     {
         String tableName = appId + "_" + "device_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, deviceType, country, serverDate, serverTime) VALUES (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverDate, serverTime) VALUES (?,?,?,?,?)",
                 deviceModel.getDeviceId(),
+                deviceModel.getChannelType(),
+                deviceModel.getPlatform(),
                 deviceModel.getDeviceType(),
+                deviceModel.getDeviceName(),
                 deviceModel.getCountry(),
                 deviceModel.getServerDate(),
                 deviceModel.getServerTime());
