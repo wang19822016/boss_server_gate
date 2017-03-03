@@ -18,10 +18,12 @@ CREATE TABLE user_base
 (
   userId BIGINT(20) DEFAULT 0,
   deviceId VARCHAR(40),
+  channelType VARCHAR(10), -- 渠道 facebook
+  platform VARCHAR(10),    -- 平台  ios/android
   serverTime DATETIME,
   serverDate DATE,
   PRIMARY KEY (userId),
-  INDEX(serverDate)
+  INDEX date_channel(serverDate, channelType)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS user_login;
@@ -61,25 +63,25 @@ CREATE TABLE user_report
 (
     id BIGINT(20) NOT NULL auto_increment,
     date DATE,
-    installNum INT,
-    regNum INT,
-    validNum INT,
-    dau INT,
-    dou INT,
-    payMoney INT,
-    payNum INT,
-    payRate TINYINT,
-    newUserPayMoney INT,
-    newUserPayNum INT,
-    newUserPayRate TINYINT,
-    arpu INT,
-    arppu INT,
-    remain2 TINYINT,
-    remain3 TINYINT,
-    remain7 TINYINT,
-    remain30 TINYINT,
-    avgOnlineNum INT,
-    avgOnlineTime INT,
+    installNum INT DEFAULT 0,
+    regNum INT DEFAULT 0,
+    validNum INT DEFAULT 0,
+    dau INT DEFAULT 0,
+    dou INT DEFAULT 0,
+    payMoney INT DEFAULT 0,
+    payNum INT DEFAULT 0,
+    payRate TINYINT DEFAULT 0,
+    newUserPayMoney INT DEFAULT 0,
+    newUserPayNum INT DEFAULT 0,
+    newUserPayRate TINYINT DEFAULT 0,
+    arpu INT DEFAULT 0,
+    arppu INT DEFAULT 0,
+    remain2 TINYINT DEFAULT 0,
+    remain3 TINYINT DEFAULT 0,
+    remain7 TINYINT DEFAULT 0,
+    remain30 TINYINT DEFAULT 0,
+    avgOnlineNum INT DEFAULT 0,
+    avgOnlineTime INT DEFAULT 0,
     PRIMARY KEY (id),
     INDEX (date)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -90,29 +92,29 @@ CREATE TABLE channel_report
   id BIGINT(20) NOT NULL auto_increment,
   date DATE,
   channelType VARCHAR(10),
-  showNum INT,
-  clickNum INT,
-  cpc INT,
-  cpm INT,
-  installNum INT,
-  cpi INT,
-  validNum INT,    -- 有效用户数
-  clickRate INT,   -- 点击率(点击/展示)
-  installRate INT, --	安装率(安装/点击）
-  regRate INT,      -- 注册率(注册/安装）
-  validRate INT,    -- 有效转化率(有效/安装)
-  roi INT,           -- 付费/花费
-  costMoney INT,     -- 花费
+  showNum INT DEFAULT 0,
+  clickNum INT DEFAULT 0,
+  cpc INT DEFAULT 0,
+  cpm INT DEFAULT 0,
+  installNum INT DEFAULT 0,
+  cpi INT DEFAULT 0,
+  validNum INT DEFAULT 0,    -- 有效用户数
+  clickRate INT DEFAULT 0,   -- 点击率(点击/展示)
+  installRate INT DEFAULT 0, --	安装率(安装/点击）
+  regRate INT DEFAULT 0,      -- 注册率(注册/安装）
+  validRate INT DEFAULT 0,    -- 有效转化率(有效/安装)
+  roi INT DEFAULT 0,           -- 付费/花费
+  costMoney INT DEFAULT 0,     -- 花费
 
-  remain2 TINYINT,
-  remain3 TINYINT,
-  remain7 TINYINT,
-  remain30 TINYINT,
-  payMoney INT,
-  payNum INT,
-  payRate TINYINT,
-  arpu INT,
-  arppu INT,
+  remain2 TINYINT DEFAULT 0,
+  remain3 TINYINT DEFAULT 0,
+  remain7 TINYINT DEFAULT 0,
+  remain30 TINYINT DEFAULT 0,
+  payMoney INT DEFAULT 0,
+  payNum INT DEFAULT 0,
+  payRate TINYINT DEFAULT 0,
+  arpu INT DEFAULT 0,
+  arppu INT DEFAULT 0,
   PRIMARY KEY (id),
   INDEX date_channel(date,channelType)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

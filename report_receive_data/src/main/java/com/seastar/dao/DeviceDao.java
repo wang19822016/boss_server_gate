@@ -87,7 +87,7 @@ public class DeviceDao
     {
         String tableName = appId + "_" + "device_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverDate, serverTime) VALUES (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverDate, serverTime) VALUES (?,?,?,?,?,?,?,?)",
                 deviceModel.getDeviceId(),
                 deviceModel.getChannelType(),
                 deviceModel.getPlatform(),

@@ -33,11 +33,14 @@ public class DailyDao
     {
         String tableName = appId + "_" + "daily_data";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,deviceType,country,payMoney,onlineLastTime,onlineTime,installTime,regTime,loginTime) VALUES (" +
-                        "?,?,?,?,?,?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,deviceType,deviceName,country,payMoney," +
+                        "onlineLastTime,onlineTime,installTime,regTime,loginTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 dailyModel.getUserId(),
                 dailyModel.getDeviceId(),
+                dailyModel.getChannelType(),
+                dailyModel.getPlatform(),
                 dailyModel.getDeviceType(),
+                dailyModel.getDeviceName(),
                 dailyModel.getCountry(),
                 dailyModel.getPayMoney(),
                 dailyModel.getOnlineLastTime(),

@@ -46,7 +46,7 @@ public class UserDao
 
         try
         {
-            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,serverTime FROM " + tableName +" where userId = ?", userId);
+            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,channelType,platform,serverTime FROM " + tableName +" where userId = ?", userId);
             userModel = objectMapper.readValue(objectMapper.writeValueAsString(result), UserModel.class);
         }
         catch (EmptyResultDataAccessException e)
@@ -75,9 +75,11 @@ public class UserDao
     {
         String tableName = appId + "_" + "user_base";
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,serverDate,serverTime) VALUES (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,serverDate,serverTime) VALUES (?,?,?,?)",
                 userModel.getUserId(),
                 userModel.getDeviceId(),
+                userModel.getChannelType(),
+                userModel.getPlatform(),
                 userModel.getServerDate(),
                 userModel.getServerTime());
     }

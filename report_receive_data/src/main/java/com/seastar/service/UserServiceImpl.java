@@ -2,10 +2,12 @@ package com.seastar.service;
 
 import com.seastar.common.ReturnCode;
 import com.seastar.dao.DailyDao;
+import com.seastar.dao.DeviceDao;
 import com.seastar.dao.LoginDao;
 import com.seastar.dao.UserDao;
 import com.seastar.entity.*;
 import com.seastar.model.DailyModel;
+import com.seastar.model.DeviceModel;
 import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService
 {
+    @Autowired
+    private DeviceDao deviceDao;
 
     @Autowired
     private UserDao userDao;
@@ -42,6 +46,12 @@ public class UserServiceImpl implements UserService
             userModel = new UserModel();
             userModel.setUserId(req.userId);
             userModel.setDeviceId(req.deviceId);
+            DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
+            if (deviceModel != null)
+            {
+                userModel.setChannelType(deviceModel.getChannelType());
+                userModel.setPlatform(deviceModel.getPlatform());
+            }
             userModel.setServerDate(req.serverTime);
             userModel.setServerTime(req.serverTime);
             userDao.saveUser(userModel, req.appId);

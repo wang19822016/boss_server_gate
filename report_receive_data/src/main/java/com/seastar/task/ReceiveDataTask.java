@@ -36,13 +36,14 @@ public class ReceiveDataTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //@Scheduled(fixedRate = 1000000000)       //10秒测试
+    @Scheduled(fixedRate = 1000000000)       //10秒测试
     //@Scheduled(cron = "0 0 3 * * ?")
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
 
-        //System.out.println("start time: " + System.currentTimeMillis());
+        long startTime = System.currentTimeMillis();
+        System.out.println("start time: " + startTime);
 
         for (int i = 0; i < len; i++)
         {
@@ -85,8 +86,8 @@ public class ReceiveDataTask
             }
         }
 
-//        long stopTime = System.currentTimeMillis();
-//        int totalTime = (int)((stopTime - startTime)/1000);
-//        System.out.println("stop: " + totalTime + " qts: " + 5000/totalTime);
+        long stopTime = System.currentTimeMillis();
+        int totalTime = (int)((stopTime - startTime)/1000);
+        System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime);
     }
 }

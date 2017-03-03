@@ -9,8 +9,26 @@ public class UserModel
 {
     private long userId;
     private String deviceId;
+    private String channelType;     //渠道 facebook
+    private String platform;        //平台  ios/android
     private Date serverDate;        //日期 2017-01-01 sql优化
     private Date serverTime;        //具体时间 2017-01-01 00:00:00
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
 
     public long getUserId()
     {
