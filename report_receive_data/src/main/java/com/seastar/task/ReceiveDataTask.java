@@ -40,6 +40,11 @@ public class ReceiveDataTask
     //@Scheduled(cron = "0 0 3 * * ?")
     public void ReceiveUserData()
     {
+        if (getRunning())
+            return;
+
+        setRunning(true);
+
         long len = redisTemplate.opsForList().size("reqList");
 
         long startTime = System.currentTimeMillis();
@@ -89,5 +94,32 @@ public class ReceiveDataTask
         long stopTime = System.currentTimeMillis();
         int totalTime = (int)((stopTime - startTime)/1000);
         System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime);
+
+        setRunning(false);
+    }
+
+    private boolean isRunning;
+
+    public boolean getRunning()
+    {
+        String state = redisTemplate.opsForValue().get("report_server_running");
+
+        if (state.isEmpty())
+            return false;
+
+        if (state == "0")
+            return false;
+
+        return true;
+    }
+
+    public void setRunning(boolean running)
+    {
+        isRunning = running;
+
+        if (isRunning)
+            redisTemplate.opsForValue().set("report_server_running", "1");
+        else
+            redisTemplate.opsForValue().set("report_server_running", "0");
     }
 }

@@ -118,3 +118,13 @@ CREATE TABLE channel_report
   PRIMARY KEY (id),
   INDEX date_channel(date,channelType)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS apps;
+CREATE TABLE apps
+(
+  id INT NOT NULL auto_increment,
+  appId INT DEFAULT 0,
+  appName VARCHAR(20),
+  createTime DATETIME,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
