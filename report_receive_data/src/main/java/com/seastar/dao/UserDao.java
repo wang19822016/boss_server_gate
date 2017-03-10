@@ -1,5 +1,6 @@
 package com.seastar.dao;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,16 @@ public class UserDao
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    public UserDao()
+    {
+        objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
+
     public UserModel findUser(String appId, long userId)
     {
         try
         {
-            String json = redisTemplate.opsForValue().get("user_" + userId);
+            String json = redisTemplate.opsForValue().get("report_user_" + userId);
 
             if (json != null)
                 return objectMapper.readValue(json, UserModel.class);
@@ -40,13 +46,13 @@ public class UserDao
             e.printStackTrace();
         }
 
-        String tableName = appId + "_" + "user_base";
+        String tableName = "user_base_" + appId;
 
         UserModel userModel = null;
 
         try
         {
-            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,channelType,platform,serverTime FROM " + tableName +" where userId = ?", userId);
+            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,channelType,platform,serverTime,serverDate FROM " + tableName +" where userId = ?", userId);
             userModel = objectMapper.readValue(objectMapper.writeValueAsString(result), UserModel.class);
         }
         catch (EmptyResultDataAccessException e)
@@ -61,7 +67,7 @@ public class UserDao
         try
         {
             if (userModel != null)
-                redisTemplate.opsForValue().set("user_" + userId, objectMapper.writeValueAsString(userModel), 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set("report_user_" + userId, objectMapper.writeValueAsString(userModel), 1, TimeUnit.DAYS);
         }
         catch (IOException e)
         {
@@ -73,9 +79,9 @@ public class UserDao
 
     public void saveUser(UserModel userModel, String appId)
     {
-        String tableName = appId + "_" + "user_base";
+        String tableName = "user_base_" + appId;
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,serverDate,serverTime) VALUES (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,serverDate,serverTime) VALUES (?,?,?,?,?,?)",
                 userModel.getUserId(),
                 userModel.getDeviceId(),
                 userModel.getChannelType(),

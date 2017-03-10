@@ -21,7 +21,7 @@ public class LoginDao
 
     public void login(String appId, long userId, Date date)
     {
-        String tableName = appId + "_" + "user_login";
+        String tableName = "user_login_" + appId;
 
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId, serverDate, serverTime) VALUES (?,?,?)",
                 userId,

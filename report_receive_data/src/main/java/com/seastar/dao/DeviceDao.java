@@ -1,6 +1,10 @@
 package com.seastar.dao;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.seastar.model.DeviceModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,6 +39,11 @@ public class DeviceDao
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    public DeviceDao()
+    {
+        objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
+
     public DeviceModel findDevice(String appId, String deviceId)
     {
         try
@@ -51,11 +60,12 @@ public class DeviceDao
 
         DeviceModel deviceModel = null;
 
-        String tableName = appId + "_" + "device_base";
+        String tableName = "device_base_" + appId;
 
         try
         {
-            Map<String, Object> resultSet = jdbcTemplate.queryForMap("select * from " + tableName +" where deviceId = ?", deviceId);
+            Map<String, Object> resultSet = jdbcTemplate.queryForMap("select deviceId,channelType,platform," +
+                    "deviceType,deviceName,country,serverDate,serverTime from " + tableName +" where deviceId = ?",deviceId);
 
             deviceModel = objectMapper.readValue(objectMapper.writeValueAsString(resultSet), DeviceModel.class);
         }
@@ -72,7 +82,7 @@ public class DeviceDao
         {
             if (deviceModel != null)
             {
-                redisTemplate.opsForValue().set(appId +"_device_"+ deviceId, objectMapper.writeValueAsString(deviceModel), 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(appId +"_device_"+ deviceId, objectMapper.writeValueAsString(deviceModel), 1, TimeUnit.DAYS);
             }
         }
         catch (IOException e)
@@ -85,7 +95,7 @@ public class DeviceDao
 
     public void saveDevice(DeviceModel deviceModel, String appId)
     {
-        String tableName = appId + "_" + "device_base";
+        String tableName = "device_base_" + appId;
 
         jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverDate, serverTime) VALUES (?,?,?,?,?,?,?,?)",
                 deviceModel.getDeviceId(),

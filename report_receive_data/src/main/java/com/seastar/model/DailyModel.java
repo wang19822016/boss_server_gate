@@ -40,8 +40,13 @@ public class DailyModel
         this.userId = userId;
     }
 
-    public String getDeviceId() {
+    public String getDeviceId()
+    {
         return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getChannelType() {
@@ -68,9 +73,7 @@ public class DailyModel
         this.deviceName = deviceName;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
+
 
     public String getDeviceType() {
         return deviceType;

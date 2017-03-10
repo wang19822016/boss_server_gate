@@ -47,11 +47,13 @@ public class UserServiceImpl implements UserService
             userModel.setUserId(req.userId);
             userModel.setDeviceId(req.deviceId);
             DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
+
             if (deviceModel != null)
             {
                 userModel.setChannelType(deviceModel.getChannelType());
                 userModel.setPlatform(deviceModel.getPlatform());
             }
+
             userModel.setServerDate(req.serverTime);
             userModel.setServerTime(req.serverTime);
             userDao.saveUser(userModel, req.appId);

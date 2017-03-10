@@ -1,5 +1,6 @@
 package com.seastar.dao;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seastar.model.DailyModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,14 @@ public class DailyDao
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    public DailyDao()
+    {
+        objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
+
     public void saveDailyData(DailyModel dailyModel, String appId)
     {
-        String tableName = appId + "_" + "daily_data";
+        String tableName = "daily_data_" + appId;
 
         jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,deviceType,deviceName,country,payMoney," +
                         "onlineLastTime,onlineTime,installTime,regTime,loginTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -53,7 +59,7 @@ public class DailyDao
         {
             DateFormat formatter = DateFormat.getDateInstance();
             String dt = formatter.format(dailyModel.getLoginTime());
-            redisTemplate.opsForValue().set(appId + "_daily_" + dt  +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel));
+            redisTemplate.opsForValue().set(appId + "_daily_" + dt  +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel), 1, TimeUnit.DAYS);
         }
         catch (IOException io)
         {
@@ -81,7 +87,7 @@ public class DailyDao
 
         try
         {
-            String tableName = appId + "_" + "daily_data";
+            String tableName = "daily_data_" + appId;
 
             Map<String,Object> result = jdbcTemplate.queryForMap("SELECT * FROM " + tableName +" where userId = ? AND loginTime = ?",
                     userId, dt);
@@ -100,7 +106,7 @@ public class DailyDao
         try
         {
             if (dailyModel != null)
-                redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + userId, objectMapper.writeValueAsString(dailyModel));
+                redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + userId, objectMapper.writeValueAsString(dailyModel), 1, TimeUnit.DAYS);
         }
         catch (IOException e)
         {
@@ -113,7 +119,7 @@ public class DailyDao
     //最后在线时间点
     public void updateOnlineLastTime(DailyModel dailyModel, Date date, String appId)
     {
-        String tableName = appId + "_" + "daily_data";
+        String tableName = "daily_data_" + appId ;
 
         String dt = DateFormat.getDateInstance().format(date);
 
@@ -129,7 +135,7 @@ public class DailyDao
     //当前在线时长
     public void updateOnlineTime(DailyModel dailyModel, Date date, String appId)
     {
-        String tableName = appId + "_" + "daily_data";
+        String tableName = "daily_data_" + appId;
         String dt = DateFormat.getDateInstance().format(date);
         int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ?, onlineTime = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getOnlineLastTime(),
@@ -143,7 +149,7 @@ public class DailyDao
 
     public void updatePayMoney(DailyModel dailyModel, Date date, String appId)
     {
-        String tableName = appId + "_" + "daily_data";
+        String tableName = "daily_data_" + appId;
 
         String dt = DateFormat.getDateInstance().format(date);
 
@@ -162,7 +168,7 @@ public class DailyDao
         {
             DateFormat formatter = DateFormat.getDateInstance();
             String dt = formatter.format(date);
-            redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel));
+            redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel),1,TimeUnit.DAYS);
         }
         catch (IOException e)
         {

@@ -22,7 +22,7 @@ public class TableServiceImpl implements TableService
     {
         for (int i = 0; i < tables.length; i++)
         {
-            String tbName = appId + "_" + tables[i];
+            String tbName =  tables[i] + "_" + appId;
 
             if (!tableDao.isHaveTable(tbName))
                 tableDao.createTable(getSql(tables[i], tbName));

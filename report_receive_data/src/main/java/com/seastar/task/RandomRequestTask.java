@@ -31,7 +31,7 @@ public class RandomRequestTask
      *  模拟每天10万注册用户 随机注册 登录
      * */
     //@Scheduled(fixedRate = 1000000000)       //N秒测试
-    //@Scheduled(cron = "0 0 1 * * ?")
+    //@Scheduled(cron = "0 26 21 ? * *")
     public void ReceiveUserData()
     {
         long startTime = System.currentTimeMillis();
@@ -42,7 +42,7 @@ public class RandomRequestTask
 
         int start = 1;
 
-        for (int day = 0; day < 31; day++)
+        for (int day = 0; day < 180; day++)
         {
             int end = day * 100000;
 
@@ -55,10 +55,7 @@ public class RandomRequestTask
                 {
                     addUserReg(userId, day);     //注册
 
-                    if (random.nextBoolean())
-                    {
-                        addUserLogin(userId, day);   //近30天模拟随机登录
-                    }
+                    addUserLogin(userId, day);   //近30天模拟随机登录
                 }
             }
 

@@ -44,9 +44,10 @@ public class CommonService
             {
                 dailyModel.setChannelType(deviceModel.getChannelType());
                 dailyModel.setPlatform(deviceModel.getPlatform());
-                deviceModel.setDeviceType(deviceModel.getDeviceType());
-                deviceModel.setDeviceName(deviceModel.getDeviceName());
+                dailyModel.setDeviceType(deviceModel.getDeviceType());
+                dailyModel.setDeviceName(deviceModel.getDeviceName());
                 dailyModel.setCountry(deviceModel.getCountry());
+                dailyModel.setInstallTime(deviceModel.getServerDate());
             }
 
             dailyModel.setRegTime(userModel.getServerDate());
