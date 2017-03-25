@@ -9,8 +9,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -23,12 +25,14 @@ import java.util.concurrent.TimeUnit;
 public class DailyDao
 {
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public DailyDao()
     {
@@ -57,8 +61,9 @@ public class DailyDao
 
         try
         {
-            DateFormat formatter = DateFormat.getDateInstance();
-            String dt = formatter.format(dailyModel.getLoginTime());
+//            DateFormat formatter = DateFormat.getDateInstance();
+//            String dt = formatter.format(dailyModel.getLoginTime());
+            String dt = sdf.format(dailyModel.getLoginTime());
             redisTemplate.opsForValue().set(appId + "_daily_" + dt  +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel), 1, TimeUnit.DAYS);
         }
         catch (IOException io)
@@ -69,8 +74,8 @@ public class DailyDao
 
     public DailyModel findDailyData(long userId, Date date, String appId)
     {
-        String dt = DateFormat.getDateInstance().format(date);
-
+        //String dt = DateFormat.getDateInstance().format(date);
+        String dt = sdf.format(date);
         try
         {
             String json = redisTemplate.opsForValue().get(appId + "_daily_" + dt +"_" + userId);
@@ -121,8 +126,8 @@ public class DailyDao
     {
         String tableName = "daily_data_" + appId ;
 
-        String dt = DateFormat.getDateInstance().format(date);
-
+        //String dt = DateFormat.getDateInstance().format(date);
+        String dt = sdf.format(date);
         int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getOnlineLastTime(),
                 dailyModel.getUserId(),
@@ -136,7 +141,8 @@ public class DailyDao
     public void updateOnlineTime(DailyModel dailyModel, Date date, String appId)
     {
         String tableName = "daily_data_" + appId;
-        String dt = DateFormat.getDateInstance().format(date);
+        //String dt = DateFormat.getDateInstance().format(date);
+        String dt = sdf.format(date);
         int line = jdbcTemplate.update("UPDATE " + tableName +" SET onlineLastTime = ?, onlineTime = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getOnlineLastTime(),
                 dailyModel.getOnlineTime(),
@@ -151,7 +157,8 @@ public class DailyDao
     {
         String tableName = "daily_data_" + appId;
 
-        String dt = DateFormat.getDateInstance().format(date);
+        //String dt = DateFormat.getDateInstance().format(date);
+        String dt = sdf.format(date);
 
         int line = jdbcTemplate.update("UPDATE " + tableName +" SET payMoney = ? WHERE userId = ? AND loginTime = ?",
                 dailyModel.getPayMoney(),
@@ -167,7 +174,8 @@ public class DailyDao
         try
         {
             DateFormat formatter = DateFormat.getDateInstance();
-            String dt = formatter.format(date);
+            //String dt = formatter.format(date);
+            String dt = sdf.format(date);
             redisTemplate.opsForValue().set(appId + "_daily_" + dt +"_" + dailyModel.getUserId(), objectMapper.writeValueAsString(dailyModel),1,TimeUnit.DAYS);
         }
         catch (IOException e)

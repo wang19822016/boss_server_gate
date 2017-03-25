@@ -38,18 +38,19 @@ public class ReceiveDataTask
 
     //@Scheduled(fixedRate = 10000)       //10秒测试
     //@Scheduled(cron = "0 26 21 ? * *")
-    @Scheduled(fixedDelay = 1000 * 60 * 10, initialDelay = 10000)
+    @Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 10000)
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
 
 //        long startTime = System.currentTimeMillis();
 //        System.out.println("start time: " + startTime);
+        System.out.println("start!!!!!!!!!!!!!!!  " + len);
 
         for (int i = 0; i < len; i++)
         {
             String json = redisTemplate.opsForList().rightPop("reqList");
-            //System.out.println("json: " + json);
+            System.out.println("json: " + json);
             try
             {
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});

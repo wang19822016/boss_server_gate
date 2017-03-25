@@ -32,6 +32,7 @@ public class RandomRequestTask
      * */
     //@Scheduled(fixedRate = 1000000000)       //N秒测试
     //@Scheduled(cron = "0 26 21 ? * *")
+    //@Scheduled(fixedDelay = 1000 * 60 * 5000, initialDelay = 5000)
     public void ReceiveUserData()
     {
         long startTime = System.currentTimeMillis();
@@ -42,15 +43,15 @@ public class RandomRequestTask
 
         int start = 1;
 
-        for (int day = 0; day < 180; day++)
+        for (int day = 0; day < 15; day++)
         {
-            int end = day * 100000;
+            int end = day * 5000;
 
             for (int i = start; i < end; i++)      //各接口每秒1000次请求
             {
                 int userId = i;
                 addDeviceInstall(userId, day);   //安装
-
+                System.out.println("UserReg: " + userId);
                 if (random.nextBoolean())
                 {
                     addUserReg(userId, day);     //注册
@@ -59,7 +60,7 @@ public class RandomRequestTask
                 }
             }
 
-            start = day * 100000;
+            start = day * 5000;
 
             System.out.println("RandomRequestTaskGap: gapTime: " + (System.currentTimeMillis() - startTime) / 1000);
         }
