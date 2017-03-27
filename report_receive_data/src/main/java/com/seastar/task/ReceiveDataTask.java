@@ -38,14 +38,13 @@ public class ReceiveDataTask
 
     //@Scheduled(fixedRate = 10000)       //10秒测试
     //@Scheduled(cron = "0 26 21 ? * *")
-    @Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 10000)
+    @Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 5000)
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
 
-//        long startTime = System.currentTimeMillis();
-//        System.out.println("start time: " + startTime);
-        System.out.println("start!!!!!!!!!!!!!!!  " + len);
+        long startTime = System.currentTimeMillis();
+        System.out.println("Start: " + startTime + " len: " + len);
 
         for (int i = 0; i < len; i++)
         {
@@ -93,8 +92,12 @@ public class ReceiveDataTask
             }
         }
 
-//        long stopTime = System.currentTimeMillis();
-//        int totalTime = (int)((stopTime - startTime)/1000);
-//        System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime);
+        long stopTime = System.currentTimeMillis();
+        int totalTime = (int)((stopTime - startTime)/1000);
+
+        if (totalTime > 0)
+            System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime + " endTime:" + stopTime);
+        else
+            System.out.println("endTime:" + stopTime);
     }
 }
