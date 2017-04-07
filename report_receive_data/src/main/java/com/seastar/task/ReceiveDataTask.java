@@ -58,6 +58,7 @@ public class ReceiveDataTask
                 if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                 {
                     DeviceInstallReq req = objectMapper.readValue(json, DeviceInstallReq.class);
+                    System.out.println("apiServerTime: " + req.serverTime.toString());
                     deviceService.doDeviceInstall(req);
                     //System.out.println("DEVICE_INSTALL: " + i);
                 }

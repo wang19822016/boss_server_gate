@@ -96,15 +96,16 @@ public class DeviceDao
     public void saveDevice(DeviceModel deviceModel, String appId)
     {
         String tableName = "device_base_" + appId;
-
-        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverDate, serverTime) VALUES (?,?,?,?,?,?,?,?)",
+        System.out.println("serverTime: " + deviceModel.getServerTime());
+        jdbcTemplate.update("INSERT INTO " + tableName + " (deviceId, channelType, platform, deviceType, deviceName, country, serverTime, serverDate) VALUES (?,?,?,?,?,?,?,?)",
                 deviceModel.getDeviceId(),
                 deviceModel.getChannelType(),
                 deviceModel.getPlatform(),
                 deviceModel.getDeviceType(),
                 deviceModel.getDeviceName(),
                 deviceModel.getCountry(),
-                deviceModel.getServerDate(),
-                deviceModel.getServerTime());
+                deviceModel.getServerTime(),
+                deviceModel.getServerDate()
+               );
     }
 }
