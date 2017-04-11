@@ -5,7 +5,7 @@ CREATE TABLE device_base
   channelType VARCHAR(10), -- 渠道 facebook
   platform VARCHAR(10),    -- 平台  ios/android
   deviceType VARCHAR(10),  -- samsung
-  deviceName VARCHAR(10),  -- i9001
+  deviceName VARCHAR(30),  -- i9001
   country VARCHAR(10),
   serverTime DATETIME,
   serverDate DATE,
@@ -48,7 +48,7 @@ CREATE TABLE daily_data
   deviceType VARCHAR(10), -- samsung
   deviceName VARCHAR(10), -- i9001
   country VARCHAR(10),
-  payMoney INT DEFAULT 0,
+  payMoney FLOAT(10,2) DEFAULT 0,
   onlineLastTime DATETIME,
   onlineTime INT DEFAULT 0,
   installTime DATE,
@@ -69,10 +69,10 @@ CREATE TABLE user_report
     validNum INT DEFAULT 0,
     dau INT DEFAULT 0,
     dou INT DEFAULT 0,
-    payMoney INT DEFAULT 0,
+    payMoney FLOAT(10,2) DEFAULT 0,
     payNum INT DEFAULT 0,
     payRate TINYINT DEFAULT 0,
-    newUserPayMoney INT DEFAULT 0,
+    newUserPayMoney FLOAT(10,2) DEFAULT 0,
     newUserPayNum INT DEFAULT 0,
     newUserPayRate TINYINT DEFAULT 0,
     arpu INT DEFAULT 0,
@@ -105,13 +105,13 @@ CREATE TABLE channel_report
   regRate INT DEFAULT 0,      -- 注册率(注册/安装）
   validRate INT DEFAULT 0,    -- 有效转化率(有效/安装)
   roi INT DEFAULT 0,           -- 付费/花费
-  costMoney INT DEFAULT 0,     -- 花费
+  costMoney FLOAT(10,2) DEFAULT 0,     -- 花费
 
   remain2 TINYINT DEFAULT 0,
   remain3 TINYINT DEFAULT 0,
   remain7 TINYINT DEFAULT 0,
   remain30 TINYINT DEFAULT 0,
-  payMoney INT DEFAULT 0,
+  payMoney FLOAT(10,2) DEFAULT 0,
   payNum INT DEFAULT 0,
   payRate TINYINT DEFAULT 0,
   arpu INT DEFAULT 0,

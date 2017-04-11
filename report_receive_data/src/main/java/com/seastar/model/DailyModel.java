@@ -17,7 +17,7 @@ public class DailyModel
     private String deviceType;      // samsung
     private String deviceName;      //i9001
     private String country;
-    private int payMoney;
+    private float payMoney;
     private int onlineTime;
     private Date onlineLastTime;
     private Date installTime;
@@ -91,11 +91,11 @@ public class DailyModel
         this.country = country;
     }
 
-    public int getPayMoney() {
+    public float getPayMoney() {
         return payMoney;
     }
 
-    public void setPayMoney(int payMoney) {
+    public void setPayMoney(float payMoney) {
         this.payMoney = payMoney;
     }
 
