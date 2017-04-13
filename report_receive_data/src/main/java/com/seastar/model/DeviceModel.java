@@ -82,5 +82,4 @@ public class DeviceModel
     public void setServerTime(Date serverTime) {
         this.serverTime = serverTime;
     }
-
 }

@@ -140,4 +140,13 @@ public class DailyModel
         this.loginTime = loginTime;
     }
 
+    public void setDeviceModel(DeviceModel deviceModel)
+    {
+        setChannelType(deviceModel.getChannelType());
+        setPlatform(deviceModel.getPlatform());
+        setDeviceType(deviceModel.getDeviceType());
+        setDeviceName(deviceModel.getDeviceName());
+        setCountry(deviceModel.getCountry());
+        setInstallTime(deviceModel.getServerDate());
+    }
 }

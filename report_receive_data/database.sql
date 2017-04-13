@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS device_base;
 CREATE TABLE device_base
 (
   deviceId VARCHAR(40),
-  channelType VARCHAR(10), -- 渠道 facebook
+  channelType VARCHAR(20), -- 渠道 facebook
   platform VARCHAR(10),    -- 平台  ios/android
-  deviceType VARCHAR(10),  -- samsung
+  deviceType VARCHAR(30),  -- samsung
   deviceName VARCHAR(30),  -- i9001
   country VARCHAR(10),
   serverTime DATETIME,
@@ -18,11 +18,12 @@ CREATE TABLE user_base
 (
   userId BIGINT(20) DEFAULT 0,
   deviceId VARCHAR(40),
-  channelType VARCHAR(10), -- 渠道 facebook
+  channelType VARCHAR(20), -- 渠道 facebook
   platform VARCHAR(10),    -- 平台  ios/android
   serverTime DATETIME,
   serverDate DATE,
   PRIMARY KEY (userId),
+  INDEX (deviceId),
   INDEX date_channel(serverDate, channelType)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -42,11 +43,11 @@ CREATE TABLE daily_data
 (
   id BIGINT(20) NOT NULL auto_increment,
   userId BIGINT(20) DEFAULT 0,
-  channelType VARCHAR(10), -- 渠道 facebook
+  channelType VARCHAR(20), -- 渠道 facebook
   deviceId VARCHAR(40),
   platform VARCHAR(10),   -- 平台  ios/android
-  deviceType VARCHAR(10), -- samsung
-  deviceName VARCHAR(10), -- i9001
+  deviceType VARCHAR(30), -- samsung
+  deviceName VARCHAR(30), -- i9001
   country VARCHAR(10),
   payMoney FLOAT(10,2) DEFAULT 0,
   onlineLastTime DATETIME,
@@ -92,7 +93,7 @@ CREATE TABLE channel_report
 (
   id BIGINT(20) NOT NULL auto_increment,
   date DATE,
-  channelType VARCHAR(10),
+  channelType VARCHAR(20),
   showNum INT DEFAULT 0,
   clickNum INT DEFAULT 0,
   cpc INT DEFAULT 0,

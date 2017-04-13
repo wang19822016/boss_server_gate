@@ -40,15 +40,18 @@ public class CommonService
             dailyModel.setDeviceId(userModel.getDeviceId());
 
             DeviceModel deviceModel = deviceDao.findDevice(appId,userModel.getDeviceId());
+
             if (deviceModel != null)
-            {
-                dailyModel.setChannelType(deviceModel.getChannelType());
-                dailyModel.setPlatform(deviceModel.getPlatform());
-                dailyModel.setDeviceType(deviceModel.getDeviceType());
-                dailyModel.setDeviceName(deviceModel.getDeviceName());
-                dailyModel.setCountry(deviceModel.getCountry());
-                dailyModel.setInstallTime(deviceModel.getServerDate());
-            }
+                dailyModel.setDeviceModel(deviceModel);
+
+//            {
+//                dailyModel.setChannelType(deviceModel.getChannelType());
+//                dailyModel.setPlatform(deviceModel.getPlatform());
+//                dailyModel.setDeviceType(deviceModel.getDeviceType());
+//                dailyModel.setDeviceName(deviceModel.getDeviceName());
+//                dailyModel.setCountry(deviceModel.getCountry());
+//                dailyModel.setInstallTime(deviceModel.getServerDate());
+//            }
 
             dailyModel.setRegTime(userModel.getServerDate());
             dailyModel.setLoginTime(date);

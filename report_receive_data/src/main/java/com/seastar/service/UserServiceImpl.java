@@ -48,10 +48,15 @@ public class UserServiceImpl implements UserService
             userModel.setDeviceId(req.deviceId);
             DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
 
+            //System.out.println("deviceId: " + deviceModel.getDeviceId() + "   userdevice:" + req.deviceId);
             if (deviceModel != null)
             {
                 userModel.setChannelType(deviceModel.getChannelType());
                 userModel.setPlatform(deviceModel.getPlatform());
+            }
+            else
+            {
+                System.out.println("deviceModel Null");
             }
 
             userModel.setServerDate(req.serverTime);
@@ -91,7 +96,7 @@ public class UserServiceImpl implements UserService
         }
     }
 
-    private int gapTime = 5;  //间隔大于n分钟则认为下线不计算 默认5分钟
+    private int gapTime = 3;  //间隔大于n分钟则认为下线不计算 默认5分钟
 
     public UserOnlineRsp doUserOnline(UserOnlineReq req)
     {
@@ -103,7 +108,10 @@ public class UserServiceImpl implements UserService
 
             long time = req.serverTime.getTime() - model.getOnlineLastTime().getTime();
             //System.out.println("time: " + time);
-            if (time >= gapTime * 60 * 1000)
+            //if (time >= gapTime * 60 * 1000)
+            int cgt = (int)(time / 60000);
+
+            if (cgt > gapTime)     //考虑网络延迟 取整成分数判定
             {
                 model.setOnlineLastTime(req.serverTime);
                 dailyDao.updateOnlineLastTime(model, req.serverTime, req.appId);
@@ -111,7 +119,12 @@ public class UserServiceImpl implements UserService
             else
             {
                 model.setOnlineLastTime(req.serverTime);
-                model.setOnlineTime(model.getOnlineTime() + gapTime);
+
+                if (cgt < gapTime)
+                    model.setOnlineTime(model.getOnlineTime() + cgt);
+                else
+                    model.setOnlineTime(model.getOnlineTime() + gapTime);
+
                 dailyDao.updateOnlineTime(model, req.serverTime, req.appId);
             }
 

@@ -72,6 +72,23 @@ public class DailyDao
         }
     }
 
+    public void updateDailyData(DailyModel dailyModel, String appId)
+    {
+        String tableName = "daily_data_" + appId;
+
+        jdbcTemplate.update("UPDATE " + tableName + " SET channelType = ?, platform = ?,deviceType = ?,deviceName = ?,country = ?, " +
+                        "installTime = ? where userId = ? AND loginTime = ?",
+
+                dailyModel.getChannelType(),
+                dailyModel.getPlatform(),
+                dailyModel.getDeviceType(),
+                dailyModel.getDeviceName(),
+                dailyModel.getCountry(),
+                dailyModel.getInstallTime(),
+                dailyModel.getUserId(),
+                dailyModel.getLoginTime());
+    }
+
     public DailyModel findDailyData(long userId, Date date, String appId)
     {
         //String dt = DateFormat.getDateInstance().format(date);

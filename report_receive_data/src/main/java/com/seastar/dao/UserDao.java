@@ -77,6 +77,29 @@ public class UserDao
         return userModel;
     }
 
+    public UserModel findUserByDeviceId(String appId, String deviceId)
+    {
+        String tableName = "user_base_" + appId;
+
+        UserModel userModel = null;
+
+        try
+        {
+            Map<String,Object> result =  jdbcTemplate.queryForMap("SELECT userId,deviceId,channelType,platform,serverTime,serverDate FROM " + tableName +" where deviceId = ?", deviceId);
+            userModel = objectMapper.readValue(objectMapper.writeValueAsString(result), UserModel.class);
+        }
+        catch (EmptyResultDataAccessException e)
+        {
+            return  null;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return userModel;
+    }
+
     public void saveUser(UserModel userModel, String appId)
     {
         String tableName = "user_base_" + appId;
@@ -88,5 +111,16 @@ public class UserDao
                 userModel.getPlatform(),
                 userModel.getServerDate(),
                 userModel.getServerTime());
+    }
+
+    public void updateUser(UserModel userModel, String appId)
+    {
+        String tableName = "user_base_" + appId;
+
+        jdbcTemplate.update("UPDATE " + tableName + " SET channelType = ?,platform = ? WHERE deviceId = ?",
+
+                userModel.getChannelType(),
+                userModel.getPlatform(),
+                userModel.getDeviceId());
     }
 }

@@ -1,10 +1,14 @@
 package com.seastar.service;
 
 import com.seastar.common.ReturnCode;
+import com.seastar.dao.DailyDao;
 import com.seastar.dao.DeviceDao;
+import com.seastar.dao.UserDao;
 import com.seastar.entity.DeviceInstallReq;
 import com.seastar.entity.DeviceInstallRsp;
+import com.seastar.model.DailyModel;
 import com.seastar.model.DeviceModel;
+import com.seastar.model.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,12 @@ public class DeviceServiceImpl implements DeviceService
 {
     @Autowired
     private DeviceDao deviceDao;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private DailyDao dailyDao;
 
     private Logger logger = LoggerFactory.getLogger(DeviceServiceImpl.class);
 
@@ -41,6 +51,21 @@ public class DeviceServiceImpl implements DeviceService
             deviceModel.setServerTime(req.serverTime);
             deviceDao.saveDevice(deviceModel, req.appId);
             //logger.info("deviceInstall {}", req.deviceId);
+
+//            UserModel userModel = userDao.findUserByDeviceId(req.appId, req.deviceId);
+//            if (userModel != null)
+//            {
+//                userModel.setChannelType(deviceModel.getChannelType());
+//                userModel.setPlatform(deviceModel.getPlatform());
+//                userDao.updateUser(userModel, req.appId);
+//
+//                DailyModel dailyModel = dailyDao.findDailyData(userModel.getUserId(), userModel.getServerDate(), req.appId);
+//                if (dailyModel != null)
+//                {
+//                    dailyModel.setDeviceModel(deviceModel);
+//                    dailyDao.updateDailyData(dailyModel, req.appId);
+//                }
+//            }
         }
 
         DeviceInstallRsp rsp = new DeviceInstallRsp();
