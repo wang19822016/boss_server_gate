@@ -2,10 +2,12 @@ package com.seastar.service;
 
 import com.seastar.common.ReturnCode;
 import com.seastar.dao.DailyDao;
+import com.seastar.dao.PayDao;
 import com.seastar.dao.UserDao;
 import com.seastar.entity.UserPayReq;
 import com.seastar.entity.UserPayRsp;
 import com.seastar.model.DailyModel;
+import com.seastar.model.PayModel;
 import com.seastar.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class PayServiceImpl implements PayService
 
     @Autowired
     private DailyDao dailyDao;
+
+    @Autowired
+    private PayDao payDao;
 
     @Autowired
     private CommonService commonService;
@@ -50,6 +55,16 @@ public class PayServiceImpl implements PayService
         DailyModel model = commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
         model.setPayMoney(model.getPayMoney() + req.payMoney);
         dailyDao.updatePayMoney(model, req.serverTime, req.appId);
+
+        PayModel payModel = new PayModel();
+        payModel.setUserId(userModel.getUserId());
+        payModel.setDeviceId(userModel.getDeviceId());
+        payModel.setChannelType(userModel.getChannelType());
+        payModel.setPayMoney(req.payMoney);
+        payModel.setServerTime(req.serverTime);
+        payModel.setServerDate(req.serverTime);
+        payModel.setRegDate(userModel.getServerDate());
+        payDao.savePay(payModel, req.appId);
 
         UserPayRsp rsp = new UserPayRsp();
         rsp.code = ReturnCode.CODE_OK;

@@ -34,7 +34,10 @@ CREATE TABLE user_login
   userId BIGINT(20) DEFAULT 0,
   serverTime DATETIME,
   serverDate DATE,          /*use mysql index and cache*/
+  regDate DATE,
+  channelType VARCHAR(20),
   PRIMARY KEY (id),
+  INDEX reg_login_channel(regDate, serverDate, channelType),
   INDEX (serverDate)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -106,6 +109,7 @@ CREATE TABLE channel_report
   regRate INT DEFAULT 0,      -- 注册率(注册/安装）
   validRate INT DEFAULT 0,    -- 有效转化率(有效/安装)
   roi INT DEFAULT 0,           -- 付费/花费
+  grossIncome FLOAT(10,2) DEFAULT 0,  -- 总收入
   costMoney FLOAT(10,2) DEFAULT 0,     -- 花费
 
   remain2 TINYINT DEFAULT 0,
@@ -119,6 +123,21 @@ CREATE TABLE channel_report
   arppu INT DEFAULT 0,
   PRIMARY KEY (id),
   INDEX date_channel(date,channelType)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS user_pay;
+CREATE TABLE user_pay
+(
+  id INT NOT NULL auto_increment,
+  userId BIGINT(20) DEFAULT 0,
+  deviceId VARCHAR(40),
+  channelType VARCHAR(20), -- 渠道 facebook
+  payMoney FLOAT(10,2) DEFAULT 0,
+  serverTime DATETIME,
+  serverDate DATE,
+  regDate DATE,
+  PRIMARY KEY (id),
+  INDEX (regDate)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS apps;

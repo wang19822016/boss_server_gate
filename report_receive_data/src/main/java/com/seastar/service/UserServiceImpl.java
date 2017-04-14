@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService
         if (userModel != null)
         {
             //登录数据
-            loginDao.login(req.appId, req.userId, req.serverTime);
+            loginDao.login(req.appId, req.userId, req.serverTime, userModel.getServerDate(), userModel.getChannelType());
 
             //活跃用户快照（综合数据）
             commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
