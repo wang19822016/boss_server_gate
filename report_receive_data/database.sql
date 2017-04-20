@@ -109,7 +109,6 @@ CREATE TABLE channel_report
   regRate FLOAT(10,4) DEFAULT 0,      -- 注册率(注册/安装）
   validRate FLOAT(10,4) DEFAULT 0,    -- 有效转化率(有效/安装)
   roi FLOAT(10,4) DEFAULT 0,           -- 付费/花费
-  grossIncome FLOAT(10,2) DEFAULT 0,  -- 总收入
   costMoney FLOAT(10,2) DEFAULT 0,     -- 花费
 
   remain2 FLOAT(10,4) DEFAULT 0,
