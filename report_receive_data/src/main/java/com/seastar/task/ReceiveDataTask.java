@@ -12,10 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by e on 2017/1/16.
@@ -37,6 +34,7 @@ public class ReceiveDataTask
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    private List<String> appList = Arrays.asList("1","2","3","4","5");
 
     private List<String> deviceReqList = new ArrayList<String>();
     private List<String> userReqList = new ArrayList<String>();
@@ -49,7 +47,6 @@ public class ReceiveDataTask
     @Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 5000)
     public void ReceiveUserData()
     {
-
         long len = redisTemplate.opsForList().size("reqList");
 
         long startTime = System.currentTimeMillis();
@@ -58,22 +55,31 @@ public class ReceiveDataTask
         for (int i = 0; i < len; i++)
         {
             String json = redisTemplate.opsForList().rightPop("reqList");
-            System.out.println("json: " + json);
+
             try
             {
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
                 String api = (String) map.get("api");
+                String appId = (String) map.get("appId");
+                if (appList.contains(appId))
+                {
+                    System.out.println("json: " + json);
+                    if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
+                        deviceReqList.add(json);
+                    else if (api.equals(ServerApi.USER_REGISTER))   //注册
+                        userReqList.add(json);
+                    else if (api.equals(ServerApi.USER_LOGIN))      //登录游戏(EnterGame)
+                        loginReqList.add(json);
+                    else if (api.equals(ServerApi.USER_PAY))        //付费
+                        payReqList.add(json);
+                    else if (api.equals(ServerApi.USER_ONLINE))     //在线时长
+                        onlineReqList.add(json);
+                }
+                else
+                {
+                    System.out.println("appId error!: " + json);
+                }
 
-                if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
-                    deviceReqList.add(json);
-                else if (api.equals(ServerApi.USER_REGISTER))   //注册
-                    userReqList.add(json);
-                else if (api.equals(ServerApi.USER_LOGIN))      //登录游戏(EnterGame)
-                    loginReqList.add(json);
-                else if (api.equals(ServerApi.USER_PAY))        //付费
-                    payReqList.add(json);
-                else if (api.equals(ServerApi.USER_ONLINE))     //在线时长
-                    onlineReqList.add(json);
             }
             catch (Exception e)
             {
@@ -81,106 +87,87 @@ public class ReceiveDataTask
             }
         }
 
-        try
-        {
-            System.out.println("Begin...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
 
-            for (int i = 0; i < deviceReqList.size(); i++)
+        System.out.println("Begin...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
+
+        for (int i = 0; i < deviceReqList.size(); i++)
+        {
+            String json = deviceReqList.get(i);
+            try
             {
-                String json = deviceReqList.get(i);
                 DeviceInstallReq req = objectMapper.readValue(json, DeviceInstallReq.class);
                 deviceService.doDeviceInstall(req);
             }
-
-            for (int i = 0; i < userReqList.size(); i++)
+            catch (Exception e)
             {
-                String json = userReqList.get(i);
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < userReqList.size(); i++)
+        {
+            String json = userReqList.get(i);
+            try
+            {
                 UserRegReq req = objectMapper.readValue(json, UserRegReq.class);
                 userService.doUserReg(req);
             }
-
-            for (int i = 0; i < loginReqList.size(); i++)
+            catch (Exception e)
             {
-                String json = loginReqList.get(i);
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < loginReqList.size(); i++)
+        {
+            String json = loginReqList.get(i);
+            try
+            {
                 UserLoginReq req = objectMapper.readValue(json, UserLoginReq.class);
                 userService.doUserLogin(req);
             }
-
-            for (int i = 0; i < payReqList.size(); i++)
+            catch (Exception e)
             {
-                String json = payReqList.get(i);
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < payReqList.size(); i++)
+        {
+            String json = payReqList.get(i);
+            try
+            {
                 UserPayReq req = objectMapper.readValue(json, UserPayReq.class);
                 payService.doUserPay(req);
             }
-
-            for (int i = 0; i < onlineReqList.size(); i++)
+            catch (Exception e)
             {
-                String json = onlineReqList.get(i);
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < onlineReqList.size(); i++)
+        {
+            String json = onlineReqList.get(i);
+            try
+            {
                 UserOnlineReq req = objectMapper.readValue(json, UserOnlineReq.class);
                 userService.doUserOnline(req);
-                 //System.out.println("USER_ONLINE: " + i);
             }
-
-            deviceReqList.clear();
-            userReqList.clear();
-            loginReqList.clear();
-            payReqList.clear();
-            onlineReqList.clear();
-
-            System.out.println("End...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+             //System.out.println("USER_ONLINE: " + i);
         }
 
+        deviceReqList.clear();
+        userReqList.clear();
+        loginReqList.clear();
+        payReqList.clear();
+        onlineReqList.clear();
 
-//        for (int i = 0; i < len; i++)
-//        {
-//            String json = redisTemplate.opsForList().rightPop("reqList");
-//            System.out.println("json: " + json);
-//            try
-//            {
-//                Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
-//                String api = (String) map.get("api");
-//
-//                if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
-//                {
-//                    DeviceInstallReq req = objectMapper.readValue(json, DeviceInstallReq.class);
-//                    System.out.println("apiServerTime: " + req.serverTime.toString());
-//                    deviceService.doDeviceInstall(req);
-//                    //System.out.println("DEVICE_INSTALL: " + i);
-//                }
-//                else if (api.equals(ServerApi.USER_REGISTER))   //注册
-//                {
-//                    UserRegReq req = objectMapper.readValue(json, UserRegReq.class);
-//                    userService.doUserReg(req);
-//                    //System.out.println("USER_REGISTER: " + i);
-//                }
-//                else if (api.equals(ServerApi.USER_LOGIN))      //登录游戏(EnterGame)
-//                {
-//                    UserLoginReq req = objectMapper.readValue(json, UserLoginReq.class);
-//                    userService.doUserLogin(req);
-//                    //System.out.println("USER_LOGIN: " + i);
-//                }
-//                else if (api.equals(ServerApi.USER_PAY))        //付费
-//                {
-//                    UserPayReq req = objectMapper.readValue(json, UserPayReq.class);
-//                    payService.doUserPay(req);
-//                    //System.out.println("USER_PAY: " + i);
-//                }
-//                else if (api.equals(ServerApi.USER_ONLINE))     //在线时长
-//                {
-//                    UserOnlineReq req = objectMapper.readValue(json, UserOnlineReq.class);
-//                    userService.doUserOnline(req);
-//                    //System.out.println("USER_ONLINE: " + i);
-//                }
-//            }
-//            catch (Exception e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
+        System.out.println("End...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
 
         long stopTime = System.currentTimeMillis();
         int totalTime = (int)((stopTime - startTime)/1000);

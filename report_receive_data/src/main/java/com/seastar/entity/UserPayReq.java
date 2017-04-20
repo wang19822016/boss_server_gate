@@ -8,6 +8,7 @@ import java.util.Date;
 public class UserPayReq extends BaseRequest
 {
     public long userId;
+    public String goodsId;
     public float payMoney;
     public Date serverTime;
 }

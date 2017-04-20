@@ -53,14 +53,33 @@ public class PayServiceImpl implements PayService
         }
 
         DailyModel model = commonService.createDailyDataIfNone(req.appId, req.userId, req.serverTime);
-        model.setPayMoney(model.getPayMoney() + req.payMoney);
+        if (req.goodsId == null || req.goodsId.isEmpty())
+        {
+            System.out.println("goodsId is null..");
+            model.setPayMoney(model.getPayMoney() + req.payMoney);
+        }
+        else
+        {
+            float payMoney = payDao.getPriceById(req.goodsId, req.appId);
+            model.setPayMoney(model.getPayMoney() + payMoney);
+        }
+
         dailyDao.updatePayMoney(model, req.serverTime, req.appId);
 
         PayModel payModel = new PayModel();
         payModel.setUserId(userModel.getUserId());
         payModel.setDeviceId(userModel.getDeviceId());
         payModel.setChannelType(userModel.getChannelType());
-        payModel.setPayMoney(req.payMoney);
+        if (req.goodsId == null || req.goodsId.isEmpty())
+        {
+            payModel.setPayMoney(req.payMoney);
+        }
+        else
+        {
+            float payMoney = payDao.getPriceById(req.goodsId, req.appId);
+            payModel.setGoodsId(req.goodsId);
+            payModel.setPayMoney(payMoney);
+        }
         payModel.setServerTime(req.serverTime);
         payModel.setServerDate(req.serverTime);
         payModel.setRegDate(userModel.getServerDate());

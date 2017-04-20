@@ -50,22 +50,6 @@ public class DeviceServiceImpl implements DeviceService
             deviceModel.setServerDate(req.serverTime);
             deviceModel.setServerTime(req.serverTime);
             deviceDao.saveDevice(deviceModel, req.appId);
-            //logger.info("deviceInstall {}", req.deviceId);
-
-//            UserModel userModel = userDao.findUserByDeviceId(req.appId, req.deviceId);
-//            if (userModel != null)
-//            {
-//                userModel.setChannelType(deviceModel.getChannelType());
-//                userModel.setPlatform(deviceModel.getPlatform());
-//                userDao.updateUser(userModel, req.appId);
-//
-//                DailyModel dailyModel = dailyDao.findDailyData(userModel.getUserId(), userModel.getServerDate(), req.appId);
-//                if (dailyModel != null)
-//                {
-//                    dailyModel.setDeviceModel(deviceModel);
-//                    dailyDao.updateDailyData(dailyModel, req.appId);
-//                }
-//            }
         }
 
         DeviceInstallRsp rsp = new DeviceInstallRsp();

@@ -11,6 +11,7 @@ public class PayModel
     private long userId;
     private String deviceId;
     private String channelType;
+    private String goodsId;
     private float payMoney;
     private Date serverTime;        //具体时间 2017-01-01 00:00:00
     private Date serverDate;        //日期 2017-01-01 sql优化
@@ -46,6 +47,14 @@ public class PayModel
 
     public void setChannelType(String channelType) {
         this.channelType = channelType;
+    }
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
     }
 
     public float getPayMoney() {
