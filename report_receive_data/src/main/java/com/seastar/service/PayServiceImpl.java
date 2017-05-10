@@ -70,6 +70,7 @@ public class PayServiceImpl implements PayService
         payModel.setUserId(userModel.getUserId());
         payModel.setDeviceId(userModel.getDeviceId());
         payModel.setChannelType(userModel.getChannelType());
+        payModel.setPlatform(userModel.getPlatform());
         if (req.goodsId == null || req.goodsId.isEmpty())
         {
             payModel.setPayMoney(req.payMoney);

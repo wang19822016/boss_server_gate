@@ -11,6 +11,7 @@ public class PayModel
     private long userId;
     private String deviceId;
     private String channelType;
+    private String platform;
     private String goodsId;
     private float payMoney;
     private Date serverTime;        //具体时间 2017-01-01 00:00:00
@@ -47,6 +48,14 @@ public class PayModel
 
     public void setChannelType(String channelType) {
         this.channelType = channelType;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public String getGoodsId() {

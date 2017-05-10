@@ -50,7 +50,7 @@ public class ReceiveDataTask
         long len = redisTemplate.opsForList().size("reqList");
 
         long startTime = System.currentTimeMillis();
-        System.out.println("Start: " + startTime + " len: " + len);
+        System.out.println("Start: " + new Date(startTime) + " len: " + len);
 
         for (int i = 0; i < len; i++)
         {
@@ -63,7 +63,7 @@ public class ReceiveDataTask
                 String appId = (String) map.get("appId");
                 if (appList.contains(appId))
                 {
-                    System.out.println("json: " + json);
+                    //System.out.println("json: " + json);
                     if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                         deviceReqList.add(json);
                     else if (api.equals(ServerApi.USER_REGISTER))   //注册
@@ -172,9 +172,10 @@ public class ReceiveDataTask
         long stopTime = System.currentTimeMillis();
         int totalTime = (int)((stopTime - startTime)/1000);
 
+        System.out.println("endTime:" + new Date(stopTime));
+
         if (totalTime > 0)
-            System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime + " endTime:" + stopTime);
-        else
-            System.out.println("endTime:" + stopTime);
+            System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime);
+
     }
 }

@@ -18,11 +18,12 @@ public class PayDao
     {
         String tableName = "user_pay_" + appId;
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,goodsId,payMoney,serverTime,serverDate,regDate) VALUES (?,?,?,?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,deviceId,channelType,platform,goodsId,payMoney,serverTime,serverDate,regDate) VALUES (?,?,?,?,?,?,?,?,?)",
 
                 payModel.getUserId(),
                 payModel.getDeviceId(),
                 payModel.getChannelType(),
+                payModel.getPlatform(),
                 payModel.getGoodsId(),
                 payModel.getPayMoney(),
                 payModel.getServerTime(),

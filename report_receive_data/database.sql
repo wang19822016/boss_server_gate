@@ -36,6 +36,7 @@ CREATE TABLE user_login
   serverDate DATE,          /*use mysql index and cache*/
   regDate DATE,
   channelType VARCHAR(20),
+  platform VARCHAR(10),   -- 平台  ios/android
   PRIMARY KEY (id),
   INDEX reg_login_channel(regDate, serverDate, channelType),
   INDEX (serverDate)
@@ -131,6 +132,7 @@ CREATE TABLE user_pay
   userId BIGINT(20) DEFAULT 0,
   deviceId VARCHAR(40),
   channelType VARCHAR(20), -- 渠道 facebook
+  platform VARCHAR(10),   -- 平台  ios/android
   goodsId VARCHAR(30),    -- 商品ID 美元统一换算
   payMoney FLOAT(10,2) DEFAULT 0,
   serverTime DATETIME,
@@ -147,6 +149,7 @@ CREATE TABLE ltv
   date DATE,
   ltvDays INT,
   ltvValue FLOAT(10,3) DEFAULT 0,
+  cpi FLOAT(10,2) DEFAULT 0,
   PRIMARY KEY (id),
   INDEX date_ltv(date,ltvDays)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -171,6 +174,7 @@ CREATE TABLE remain
   date DATE,
   remainDays INT,
   remainValue FLOAT(10,4) DEFAULT 0,
+  dnu INT DEFAULT 0,
   PRIMARY KEY (id),
   INDEX date_remain(date, remainDays)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -189,19 +193,6 @@ CREATE TABLE pay_conversion
   INDEX date_remain(date, payDays)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS pay_top;  -- 鲸鱼用户
-CREATE TABLE pay_top
-(
-  id INT NOT NULL AUTO_INCREMENT,
-  userId BIGINT(20) DEFAULT 0,
-  channelType VARCHAR(20),
-  payMoney FLOAT(10,2) DEFAULT 0,
-  regDate DATE,
-  firstPayDate DATE,
-  lastPayDate DATE,
-  lastLoginTime DATETIME,
-  PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS goods;
 CREATE TABLE goods
@@ -209,7 +200,7 @@ CREATE TABLE goods
   id INT NOT NULL auto_increment,
   appId INT,
   goodsId VARCHAR(30),
-  goodsName VARCHAR(30),
+  goodsName VARCHAR(50),
   price FLOAT(10,2) DEFAULT 0,
   currency VARCHAR(10) DEFAULT "USD",
   platform VARCHAR(10),
