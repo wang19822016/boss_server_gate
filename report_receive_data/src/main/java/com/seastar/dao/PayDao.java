@@ -36,7 +36,8 @@ public class PayDao
     {
         String tableName = "goods_" + appId;
         String sql = "select price from "+tableName+" where appId = ? and goodsId = ?";
-        Integer price = jdbcTemplate.queryForObject(sql, Integer.class, appId, goodsId);
+
+        Float price = jdbcTemplate.queryForObject(sql, Float.class, appId, goodsId);
 
         if (price == null)
             return 0;

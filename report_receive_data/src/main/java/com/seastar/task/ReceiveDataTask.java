@@ -61,9 +61,15 @@ public class ReceiveDataTask
                 Map<String, String> map = objectMapper.readValue(json, new TypeReference<Map<String, String>>(){});
                 String api = (String) map.get("api");
                 String appId = (String) map.get("appId");
+                if (appId == null)
+                {
+                    System.out.println("appIdNull!!: " + json);
+                    continue;
+                }
+
                 if (appList.contains(appId))
                 {
-                    //System.out.println("json: " + json);
+                    System.out.println("json: " + json);
                     if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
                         deviceReqList.add(json);
                     else if (api.equals(ServerApi.USER_REGISTER))   //注册

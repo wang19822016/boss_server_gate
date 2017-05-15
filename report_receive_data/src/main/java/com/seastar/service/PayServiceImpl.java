@@ -34,14 +34,6 @@ public class PayServiceImpl implements PayService
 
     public UserPayRsp doUserPay(UserPayReq req)
     {
-        if (req.userId < 0)
-        {
-            UserPayRsp rsp = new UserPayRsp();
-            rsp.code = ReturnCode.CODE_USERID_ERROR;
-            rsp.codeDesc = ReturnCode.CODE_USERID_ERROR_DESC;
-            return rsp;
-        }
-
         UserModel userModel = userDao.findUser(req.appId, req.userId);
 
         if (userModel == null)
@@ -61,7 +53,9 @@ public class PayServiceImpl implements PayService
         else
         {
             float payMoney = payDao.getPriceById(req.goodsId, req.appId);
-            model.setPayMoney(model.getPayMoney() + payMoney);
+            float totalMoney = model.getPayMoney() + payMoney;
+            System.out.println("DailyData PayMoney: " + payMoney + " TotalMoney: " + totalMoney);
+            model.setPayMoney(totalMoney);
         }
 
         dailyDao.updatePayMoney(model, req.serverTime, req.appId);
@@ -73,6 +67,7 @@ public class PayServiceImpl implements PayService
         payModel.setPlatform(userModel.getPlatform());
         if (req.goodsId == null || req.goodsId.isEmpty())
         {
+            System.out.println("goodsId Null!!");
             payModel.setPayMoney(req.payMoney);
         }
         else
@@ -80,6 +75,7 @@ public class PayServiceImpl implements PayService
             float payMoney = payDao.getPriceById(req.goodsId, req.appId);
             payModel.setGoodsId(req.goodsId);
             payModel.setPayMoney(payMoney);
+            System.out.println("PayMoney: " + payMoney);
         }
         payModel.setServerTime(req.serverTime);
         payModel.setServerDate(req.serverTime);

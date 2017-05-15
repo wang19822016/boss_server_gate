@@ -19,15 +19,16 @@ public class LoginDao
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    public void login(String appId, long userId, Date loginDate, Date regDate, String channelType)
+    public void login(String appId, long userId, Date loginDate, Date regDate, String channelType, String platform)
     {
         String tableName = "user_login_" + appId;
 
-        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,serverTime,serverDate,regDate,channelType) VALUES (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO " + tableName + "(userId,serverTime,serverDate,regDate,channelType, platform) VALUES (?,?,?,?,?,?)",
                 userId,
                 loginDate,
                 loginDate,
                 regDate,
-                channelType);
+                channelType,
+                platform);
     }
 }
