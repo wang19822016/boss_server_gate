@@ -75,7 +75,7 @@ public class PayServiceImpl implements PayService
             float payMoney = payDao.getPriceById(req.goodsId, req.appId);
             payModel.setGoodsId(req.goodsId);
             payModel.setPayMoney(payMoney);
-            System.out.println("PayMoney: " + payMoney);
+            System.out.println("PayMoney: " +  req.appId + " / " + userModel.getPlatform() + " / " +req.goodsId + " / " + payMoney);
         }
         payModel.setServerTime(req.serverTime);
         payModel.setServerDate(req.serverTime);

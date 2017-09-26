@@ -7,6 +7,8 @@ import com.seastar.entity.*;
 import com.seastar.service.DeviceService;
 import com.seastar.service.PayService;
 import com.seastar.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,9 +34,12 @@ public class ReceiveDataTask
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+
+    private Logger logger = LoggerFactory.getLogger(ReceiveDataTask.class);
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private List<String> appList = Arrays.asList("1","2","3","4","5");
+    private List<String> appList = Arrays.asList("1","2","3","4","5","26");
 
     private List<String> deviceReqList = new ArrayList<String>();
     private List<String> userReqList = new ArrayList<String>();
@@ -44,13 +49,15 @@ public class ReceiveDataTask
 
     //@Scheduled(fixedRate = 10000)       //10秒测试
     //@Scheduled(cron = "0 26 21 ? * *")
-    @Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 5000)
+
+    //@Scheduled(fixedDelay = 1000 * 60 * 2, initialDelay = 5000)
     public void ReceiveUserData()
     {
         long len = redisTemplate.opsForList().size("reqList");
 
         long startTime = System.currentTimeMillis();
-        System.out.println("Start: " + new Date(startTime) + " len: " + len);
+        //System.out.println("Start: " + new Date(startTime) + " len: " + len);
+        logger.info("Start: {} len: {}", new Date(startTime), len);
 
         for (int i = 0; i < len; i++)
         {
@@ -63,27 +70,39 @@ public class ReceiveDataTask
                 String appId = (String) map.get("appId");
                 if (appId == null)
                 {
-                    System.out.println("appIdNull!!: " + json);
+                    logger.error("appIdNull!!: " + json);
                     continue;
                 }
 
                 if (appList.contains(appId))
                 {
-                    System.out.println("json: " + json);
+                    //System.out.println("json: " + json);
                     if (api.equals(ServerApi.DEVICE_INSTALL))       //安装
+                    {
+                        //System.out.println("json: " + json);
                         deviceReqList.add(json);
+                    }
                     else if (api.equals(ServerApi.USER_REGISTER))   //注册
+                    {
+                        //System.out.println("json: " + json);
                         userReqList.add(json);
+                    }
                     else if (api.equals(ServerApi.USER_LOGIN))      //登录游戏(EnterGame)
+                    {
                         loginReqList.add(json);
+                    }
                     else if (api.equals(ServerApi.USER_PAY))        //付费
+                    {
                         payReqList.add(json);
+                    }
                     else if (api.equals(ServerApi.USER_ONLINE))     //在线时长
+                    {
                         onlineReqList.add(json);
+                    }
                 }
                 else
                 {
-                    System.out.println("appId error!: " + json);
+                    logger.error("appId error!: " + json);
                 }
 
             }
@@ -94,7 +113,7 @@ public class ReceiveDataTask
         }
 
 
-        System.out.println("Begin...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
+       // System.out.println("Begin...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
 
         for (int i = 0; i < deviceReqList.size(); i++)
         {
@@ -173,15 +192,15 @@ public class ReceiveDataTask
         payReqList.clear();
         onlineReqList.clear();
 
-        System.out.println("End...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
+        //System.out.println("End...device:"+deviceReqList.size()+" user:"+userReqList.size()+" login:"+loginReqList.size()+" pay:"+payReqList.size()+" online:"+onlineReqList.size());
 
         long stopTime = System.currentTimeMillis();
         int totalTime = (int)((stopTime - startTime)/1000);
 
-        System.out.println("endTime:" + new Date(stopTime));
+       // System.out.println("endTime:" + new Date(stopTime));
 
         if (totalTime > 0)
-            System.out.println("totalTime: " + totalTime + " qts: " + len/totalTime);
+            logger.info("totalTime: {} qts: {}", totalTime , len/totalTime);
 
     }
 }

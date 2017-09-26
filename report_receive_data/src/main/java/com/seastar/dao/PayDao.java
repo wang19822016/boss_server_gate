@@ -2,6 +2,7 @@ package com.seastar.dao;
 
 import com.seastar.model.PayModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -36,8 +37,22 @@ public class PayDao
     {
         String tableName = "goods_" + appId;
         String sql = "select price from "+tableName+" where appId = ? and goodsId = ?";
+        Float price = null;
 
-        Float price = jdbcTemplate.queryForObject(sql, Float.class, appId, goodsId);
+        try
+        {
+            price = jdbcTemplate.queryForObject(sql, Float.class, appId, goodsId);
+        }
+        catch (EmptyResultDataAccessException error)
+        {
+            System.out.println("Null goodsId: " + goodsId + " appId: " + appId);
+            System.out.println(error.toString());
+        }
+
+        if (price == null || price.floatValue() <= 0)
+        {
+            System.out.println("Null goodsId: " + goodsId + " appId: " + appId);
+        }
 
         if (price == null)
             return 0;

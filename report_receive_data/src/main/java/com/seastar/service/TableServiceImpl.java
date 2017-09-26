@@ -16,7 +16,9 @@ public class TableServiceImpl implements TableService
     @Autowired
     private TableDao tableDao;
 
-    private String[] tables = new String[]{"device_base","user_base","user_login","daily_data","user_report","channel_report"};
+    private String[] tables = new String[]{"daily_data","goods","ltv","ltv_android","ltv_ios", "pay_conversion",
+            "pay_conversion_android","pay_conversion_ios", "remain", "remain_android", "remain_ios", "roi",
+            "roi_android", "roi_ios", "user_base","user_login","user_pay", "user_report","user_report_android","user_report_ios"};
 
     public TableRsp doInitReportTables(String appId)
     {
@@ -41,8 +43,26 @@ public class TableServiceImpl implements TableService
 
     private String getSql(String templateName, String tbName)
     {
-        if (templateName == "device_base")
-            return SqlCode.getDeviceBase(tbName);
+//        if (templateName == "device_base")
+//            return SqlCode.getDeviceBase(tbName);
+
+        if (templateName == "daily_data")
+            return SqlCode.getDailyData(tbName);
+
+        if (templateName == "goods")
+            return SqlCode.getGoods(tbName);
+
+        if (templateName == "ltv" || templateName == "ltv_android" || templateName == "ltv_ios")
+            return SqlCode.getLtv(tbName);
+
+        if (templateName == "pay_conversion" || templateName == "pay_conversion_android" || templateName == "pay_conversion_ios")
+            return SqlCode.getPayConversion(tbName);
+
+        if (templateName == "remain" || templateName == "remain_android" || templateName == "remain_ios")
+            return SqlCode.getRemain(tbName);
+
+        if (templateName == "roi" || templateName == "roi_android" || templateName == "roi_ios")
+            return SqlCode.getRoi(tbName);
 
         if (templateName == "user_base")
             return SqlCode.getUserBase(tbName);
@@ -50,14 +70,14 @@ public class TableServiceImpl implements TableService
         if (templateName == "user_login")
             return SqlCode.getUserLogin(tbName);
 
-        if (templateName == "daily_data")
-            return SqlCode.getDailyData(tbName);
+        if (templateName == "user_pay")
+            return SqlCode.getUserPay(tbName);
 
-        if (templateName == "user_report")
+        if (templateName == "user_report" || templateName == "user_report_android" || templateName == "user_report_ios")
             return SqlCode.getUserReport(tbName);
 
-        if (templateName == "channel_report")
-            return SqlCode.getChannelReport(tbName);
+//        if (templateName == "channel_report")
+//            return SqlCode.getChannelReport(tbName);
 
         return "";
     }

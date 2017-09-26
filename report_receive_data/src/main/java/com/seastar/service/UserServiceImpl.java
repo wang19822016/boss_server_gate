@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService
     @Autowired
     private CommonService commonService;
 
+
     @Transactional
     public UserRegRsp doUserReg(UserRegReq req)
     {
@@ -46,19 +47,21 @@ public class UserServiceImpl implements UserService
             userModel = new UserModel();
             userModel.setUserId(req.userId);
             userModel.setDeviceId(req.deviceId);
-            DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
 
             //System.out.println("deviceId: " + deviceModel.getDeviceId() + "   userdevice:" + req.deviceId);
-            if (deviceModel != null)
-            {
-                userModel.setChannelType(deviceModel.getChannelType());
-                userModel.setPlatform(deviceModel.getPlatform());
-            }
-            else
-            {
-                System.out.println("deviceModel Null");
-            }
 
+//            DeviceModel deviceModel = deviceDao.findDevice(req.appId, req.deviceId);
+//
+//            if (deviceModel != null)
+//            {
+//                userModel.setChannelType(deviceModel.getChannelType());
+//                userModel.setPlatform(deviceModel.getPlatform());
+//            }
+//            else
+//            {
+//                System.out.println("deviceModel Null");
+//            }
+            userModel.setPlatform(req.platform);
             userModel.setServerDate(req.serverTime);
             userModel.setServerTime(req.serverTime);
             userDao.saveUser(userModel, req.appId);

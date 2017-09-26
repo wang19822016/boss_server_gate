@@ -9,5 +9,6 @@ public class UserRegReq extends BaseRequest
 {
     public long userId;
     public String deviceId;
+    public String platform;         //平台  ios/android
     public Date serverTime;
 }
